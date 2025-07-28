@@ -24,10 +24,10 @@ while True :
         name = input("성적을 입력할 학생 이름을 입력하세요:")
         if name in student_info:
             grade = int(input("성적을 입력하세요 (0~100):"))
-            student_info[name]["grade"] = grade
             if grade < 0 or grade > 100:
                 print("잘못된 성적입니다. 0~100 사이의 숫자를 입력하세요.")
             else:
+                student_info[name]["grade"] = grade
                 print(f"{name} 학생의 성적이 입력되었습니다!")
         else:
             print("등록되지 않은 학생입니다!")
@@ -55,10 +55,13 @@ while True :
             print(f"{name} 학생의 성적이 수정되었습니다!")
         else:
             print("등록되지 않은 학생입니다!")
-    elif i == 6 :
-        print("현재 등록된 학생 목록:")
-        for name in student_info:
-            print(f"- {name}")
+    elif i == 6:
+        if student_info:
+            print("현재 등록된 학생 목록:")
+            for name in student_info:
+                print(f"- {name}")
+        else:
+            print("등록된 학생이 없습니다.")
     elif i == 7 :
         print("프로그램을 종료합니다.")
         break
