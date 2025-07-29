@@ -24,3 +24,32 @@ my_account.deposit(5000)
 my_account.withdraw(3000)    
 my_account.withdraw(20000)
 print(my_account.get_balance())
+
+
+class Vehicle:
+    def __init__(self):
+        pass
+    
+    def move(self):
+        print("이동합니다")
+
+class Car(Vehicle):
+    def move(self):
+        print("자동차가 움직입니다")
+
+class Bicycle(Vehicle):  
+    def move(self):
+        print("자전거가 페달을 밟아요")
+
+class Airplane(Vehicle):
+    def move(self):
+        print("비행기가 하늘을 날아요")
+
+car = Car()        
+bicycle = Bicycle()
+airplane = Airplane()
+
+vehicle = [car, bicycle, airplane]
+
+for vehi in vehicle:
+    vehi.move()
