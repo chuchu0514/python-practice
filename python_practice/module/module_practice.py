@@ -1,4 +1,4 @@
-import math_utils
+import python_practice.module.math_utils as math_utils
 
 print("\\n--- Math Utils 테스트 ---")
 print(f"10 + 5 = {math_utils.add(10, 5)}")
@@ -9,7 +9,7 @@ print(f"15 ÷ 0 = {math_utils.divide(15, 0)}")
 print(f"2^5 = {math_utils.power(2, 5)}")
 
 # game_utils 테스트
-import game_utils
+import python_practice.module.game_utils as game_utils
 
 print("\\n--- Game Utils 테스트 ---")
 print(f"주사위: {game_utils.roll_dice()}")
