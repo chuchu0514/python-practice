@@ -10,7 +10,9 @@ def generate_baseball_numbers():
     while True:
         numbers = sample(range(0, 10), 3)
         if numbers[0] != 0:  
-            return numbers
+            # [1, 0, 4] → "104" 로 변환
+            result = str(numbers[0]) + str(numbers[1]) + str(numbers[2])
+            return result
 
 def generate_lotto():
     """로또 번호 6개 생성 (1~45)"""
