@@ -14,6 +14,13 @@ def generate_baseball_numbers():
             result = str(numbers[0]) + str(numbers[1]) + str(numbers[2])
             return result
 
+def generate_4digit_numbers():
+    while True:
+        numbers = sample(range(0, 10), 4)
+        if numbers[0] != 0:  
+            result = str(numbers[0]) + str(numbers[1]) + str(numbers[2]) + str(numbers[3])
+            return result
+
 def generate_lotto():
     """로또 번호 6개 생성 (1~45)"""
     return sorted(sample(range(1, 46), 6))
