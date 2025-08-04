@@ -19,7 +19,15 @@ def validate_input(user_input, difficult = 3):
     else: 
         return False
     
-    
+def number_choice_baseball(difficult = 3):
+   while True:
+        if difficult == 3:
+            return game_utils.generate_baseball_numbers()
+        elif difficult == 4:
+            return game_utils.generate_4digit_numbers()
+        else:
+            print("3 또는 4를 입력하세요.")
+
 def calculate_strike_ball(computer, user, difficult = 3): 
     """간단하게 통합"""
     ball_count = 0
@@ -45,102 +53,53 @@ def play_baseball_game():
                     print("3 또는 4만 입력하세요.")
             except ValueError:
                 print("숫자만 입력하세요.")
-        if difficult == 3:
-            print("=== 숫자야구 게임 === 기록을 보고 싶다면 'h' 입력.")
+          
+        print("=== 숫자야구 게임 === 기록을 보고 싶다면 'h' 입력.")
+                
+        # 컴퓨터 숫자 생성 (이미 완성된 함수 사용)
+        computer_numbers = number_choice_baseball(difficult)
+        game_over = False
+        attempt_count = 0  
+        record = []
+        while not game_over:
             
-            # 컴퓨터 숫자 생성 (이미 완성된 함수 사용)
-            computer_numbers = game_utils.generate_baseball_numbers()
-            game_over = False
-            attempt_count = 0  
-            record = []
-            while not game_over:
-                
-                user_input = input("3자리 숫자(0~9)를 입력하세요(첫 자리 0x, 중복불가): ")
-                print(f"입력: {user_input}")
-                
-
-                if user_input == 'h':
-                    if not record == []:
-                        for entry in record:
-                            print(f"시도 {entry[0]}: {entry[1]} -> {entry[2]}S {entry[3]}B")
-                    else:
-                        print("기록이 없습니다.")
-
-                elif validate_input(user_input):
-                    attempt_count += 1  # ✅ 시도 횟수 증가
-                    
-                    # ✅ 함수 호출하고 결과 받기
-                    strike, ball = calculate_strike_ball(computer_numbers, user_input)
-                    record.append([attempt_count, user_input, strike, ball])
-                    if strike == 3:  # ✅ 3스트라이크면 정답
-                        print(f"축하드립니다! {attempt_count}번만에 정답을 맞췄습니다! 정답: {user_input}")
-                        while True:
-                            answer = input("재시작하겠습니까? (y/n)")
-                            if answer == 'y':
-                                game_over = True
-                                break
-                            elif answer == 'n':
-                                return
-                            else:
-                                print("y와n 중 하나를 입력하세요.")
-
-                        
-                    else:
-                        # ✅ 결과 제대로 출력
-                        print(f"시도 {attempt_count}: {strike}s {ball}b")
-                        
-                else:
-                    print("❌ 잘못된 입력입니다!")
-                    print("💡 중복 없는 3자리 숫자를 입력하세요 (첫 자리는 0 제외)")
-        elif difficult == 4:
-            print("=== 숫자야구 게임 === 기록을 보고 싶다면 'h' 입력.")
+            user_input = input(f"{difficult}자리 숫자(0~9)를 입력하세요(첫 자리 0x, 중복불가): ")
+            print(f"입력: {user_input}")
             
-            # 컴퓨터 숫자 생성 (이미 완성된 함수 사용)
-            computer_numbers = game_utils.generate_4digit_numbers()
-            game_over = False
-            attempt_count = 0  
-            record = []
-            while not game_over:
-                
-                user_input = input("4자리 숫자(0~9)를 입력하세요(첫 자리 0x, 중복불가): ")
-                print(f"입력: {user_input}")
-                
 
-                if user_input == 'h':
-                    if not record == []:
-                        for entry in record:
-                            print(f"시도 {entry[0]}: {entry[1]} -> {entry[2]}S {entry[3]}B")
-                    else:
-                        print("기록이 없습니다.")
-
-                elif validate_input(user_input, difficult):
-                    attempt_count += 1  # ✅ 시도 횟수 증가
-                    
-                    # ✅ 함수 호출하고 결과 받기
-                    strike, ball = calculate_strike_ball(computer_numbers, user_input, difficult)
-                    record.append([attempt_count, user_input, strike, ball])
-                    if strike == 4:  
-                        print(f"축하드립니다! {attempt_count}번만에 정답을 맞췄습니다! 정답: {user_input}")
-                        while True:
-                            answer = input("재시작하겠습니까? (y/n)")
-                            if answer == 'y':
-                                game_over = True
-                                break
-                            elif answer == 'n':
-                                return
-                            else:
-                                print("y와n 중 하나를 입력하세요.")
-
-                        
-                    else:
-                        # ✅ 결과 제대로 출력
-                        print(f"시도 {attempt_count}: {strike}s {ball}b")
-                        
+            if user_input == 'h':
+                if not record == []:
+                    for entry in record:
+                        print(f"시도 {entry[0]}: {entry[1]} -> {entry[2]}S {entry[3]}B")
                 else:
-                    print("❌ 잘못된 입력입니다!")
-                    print("💡 중복 없는 4자리 숫자를 입력하세요 (첫 자리는 0 제외)")
-        else:
-            print("잘못 입력하셨습니다.")
+                    print("기록이 없습니다.")
+
+            elif validate_input(user_input, difficult):
+                attempt_count += 1  # ✅ 시도 횟수 증가
+                
+                # ✅ 함수 호출하고 결과 받기
+                strike, ball = calculate_strike_ball(computer_numbers, user_input, difficult)
+                record.append([attempt_count, user_input, strike, ball])
+                if strike == difficult:  
+                    print(f"축하드립니다! {attempt_count}번만에 정답을 맞췄습니다! 정답: {user_input}")
+                    while True:
+                        answer = input("재시작하겠습니까? (y/n)")
+                        if answer == 'y':
+                            game_over = True
+                            break
+                        elif answer == 'n':
+                            return
+                        else:
+                            print("y와n 중 하나를 입력하세요.")
+
+                    
+                else:
+                    # ✅ 결과 제대로 출력
+                    print(f"시도 {attempt_count}: {strike}s {ball}b")
+                    
+            else:
+                print("❌ 잘못된 입력입니다!")
+                print(f"💡 중복 없는 {difficult}자리 숫자를 입력하세요 (첫 자리는 0 제외)")
         
 def play_roll_dice():
     while True:
