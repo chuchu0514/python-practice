@@ -1,0 +1,40 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "jinsung",
+      "email": "jinsung@example.com",
+      "profile": {
+        "name": "진성",
+        "age": 25,
+        "interests": [
+          "프로그래밍",
+          "게임",
+          "음악"
+        ]
+      },
+      "created_at": "2024-01-15",
+      "last_login": "2024-08-04",
+      "is_active": true
+    },
+    {
+      "id": 2,
+      "username": "alice",
+      "email": "alice@example.com",
+      "profile": {
+        "name": "앨리스",
+        "age": 23,
+        "interests": [
+          "독서",
+          "요리",
+          "여행"
+        ]
+      },
+      "created_at": "2024-02-20",
+      "last_login": "2024-08-03",
+      "is_active": true
+    }
+  ],
+  "total_users": 2,
+  "last_updated": "2024-08-04 15:30:00"
+}

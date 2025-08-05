@@ -1,0 +1,20 @@
+{
+  "app_name": "진성의 학습 도우미",
+  "version": "1.0.0",
+  "user_settings": {
+    "theme": "dark",
+    "language": "ko",
+    "auto_save": true,
+    "save_interval": 300
+  },
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "name": "learning_db"
+  },
+  "features": [
+    "auto_backup",
+    "cloud_sync",
+    "offline_mode"
+  ]
+}

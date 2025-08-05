@@ -1,0 +1,12 @@
+{
+  "한글": "안녕하세요",
+  "English": "Hello",
+  "numbers": [
+    1,
+    2,
+    3
+  ],
+  "nested": {
+    "key": "value"
+  }
+}
