@@ -15,7 +15,7 @@ stack = []  # 빈 스택
 
 print(f"초기 스택: {stack}")
 
-# 스택에 데이터 추가 (push)
+# 스택에 데이터 추가 (push)k
 stack.append("첫 번째 책")
 print(f"첫 번째 책 추가: {stack}")
 
