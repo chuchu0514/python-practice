@@ -29,10 +29,29 @@ def add_expense():
 # 필요: 금액, 카테고리, 메모, 날짜(자동)
 # 중요: 거래 딕셔너리에 년/월/일 정보 저장!
 # 체크: 지출이 제대로 입력되는가?
-        amount = int(input("지출 금액: "))
-        category = input("카테고리: ")
+    try:
+        amount = int(input("지출 금액: "))    
+        expense_categories = ["식비", "교통비", "생활비", "취미", "데이트", "저축", "필수품", "기타"]
+        print("카테고리 선택:")
+        for i, cat in enumerate(expense_categories, 1):
+            print(f"{i}. {cat}")
+        cat_choice = int(input("선택: "))
+        category = expense_categories[cat_choice - 1]
         memo = input("메모: ")
-    
+        date = input("날짜(YYYY-MM): ")
+        datetime.datetime.strptime(date, "%Y-%m")
+        transaction = {
+            "id": len(transactions) + 1,
+            "type": "지출",
+            "amount": amount,      
+            "category": category,
+            "memo": memo,
+            "date": date
+        }
+        transactions.append(transaction)
+        print(f"✅ 지출 {amount}원이 추가되었습니다!")
+    except ValueError:
+        print("올바른 값을 입력해주세요.")
 
 def add_income():
     # 수입 추가
