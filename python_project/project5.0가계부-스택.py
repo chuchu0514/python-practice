@@ -24,44 +24,90 @@ def manage_transactions():
     return choice
 
 def add_expense():
-    # 지출 추가
-    # 목표: 지출 입력받기
-# 필요: 금액, 카테고리, 메모, 날짜(자동)
-# 중요: 거래 딕셔너리에 년/월/일 정보 저장!
-# 체크: 지출이 제대로 입력되는가?
-    try:
-        amount = int(input("지출 금액: "))    
-        expense_categories = ["식비", "교통비", "생활비", "취미", "데이트", "저축", "필수품", "기타"]
-        print("카테고리 선택:")
-        for i, cat in enumerate(expense_categories, 1):
-            print(f"{i}. {cat}")
-        cat_choice = int(input("선택: "))
-        category = expense_categories[cat_choice - 1]
-        memo = input("메모: ")
-        date = input("날짜(YYYY-MM): ")
-        datetime.datetime.strptime(date, "%Y-%m")
-        transaction = {
-            "id": len(transactions) + 1,
-            "type": "지출",
-            "amount": amount,      
-            "category": category,
-            "memo": memo,
-            "date": date
-        }
-        transactions.append(transaction)
-        print(f"✅ 지출 {amount}원이 추가되었습니다!")
-    except ValueError:
-        print("올바른 값을 입력해주세요.")
+    # 금액 입력 (반복)
+    while True:
+        try:
+            amount = int(input("지출 금액: "))
+            if amount > 0:
+                break
+            else:
+                print("❌ 0보다 큰 금액을 입력하세요!")
+        except ValueError:
+            print("❌ 숫자만 입력하세요!")
+    
+    # 카테고리 선택 (반복)
+    expense_categories = ["식비", "교통비", "생활비", "취미", "데이트", "저축", "필수품", "기타"]
+    while True:
+        try:
+            print("카테고리 선택:")
+            for i, cat in enumerate(expense_categories, 1):
+                print(f"{i}. {cat}")
+            cat_choice = int(input("선택: "))
+            if 1 <= cat_choice <= len(expense_categories):
+                category = expense_categories[cat_choice - 1]
+                break
+            else:
+                print(f"❌ 1~{len(expense_categories)} 사이의 숫자를 입력하세요!")
+        except ValueError:
+            print("❌ 숫자만 입력하세요!")
+    
+    memo = input("메모: ")  
+    
+    # 날짜 입력 (반복)
+    while True:
+        try:
+            date = input("날짜(YYYY-MM): ")
+            datetime.datetime.strptime(date, "%Y-%m")
+            break
+        except ValueError:
+            print("❌ 올바른 날짜 형식을 입력하세요! (예: 2024-03)")
+    
+    # 거래 저장
+    transaction = {
+        "id": len(transactions) + 1,
+        "type": "지출",
+        "amount": amount,      
+        "category": category,
+        "memo": memo,
+        "date": date
+    }
+    transactions.append(transaction)
+    print(f"✅ 지출 {amount}원이 추가되었습니다!")
 
 def add_income():
     # 수입 추가
     # 목표: 수입 입력받기
 # add_expense()와 비슷하지만 수입 카테고리 사용
 # 체크: 수입이 제대로 입력되는가?
-    pass
+    try:
+        while True:
+            try:
+                amount = int(input("수입: "))
+                if amount > 0:
+                    break
+                else:
+                    print("❌ 0보다 큰 금액을 입력하세요!")
+            except ValueError:
+                print("❌ 숫자만 입력하세요!")
+        while True:
+            try:
+                date = input("날짜(YYYY-MM): ")
+                datetime.datetime.strptime(date, "%Y-%m")
+                break
+            except ValueError:
+                print("❌ 올바른 날짜 형식을 입력하세요! (예: 2024-03)")
+        transaction = {
+            "type": "수입",
+            "amount": amount,      
+            "date": date
+        }
+        transactions.append(transaction)
+        print(f"✅ 수입 {amount}원이 추가되었습니다!")
+    except ValueError:
+        print("올바른 값을 입력해주세요.")
 
 # 수입/지출 몇 개 입력해보기
-# transactions 리스트에 잘 저장되는지 확인
+# transactions 리스트에 잘 저장되는지 확인 //확인완료
 
 def show_transactions():
     # 거래 내역 보기
