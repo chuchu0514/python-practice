@@ -1,7 +1,7 @@
 import datetime
 
 transactions = []  # 거래 리스트
-categories = {}  # 카테고리 딕셔너리
+
 
 
 def show_menu():
@@ -97,6 +97,7 @@ def add_income():
             except ValueError:
                 print("❌ 올바른 날짜 형식을 입력하세요! (예: 2024-03)")
         transaction = {
+            "id": len(transactions) + 1,
             "type": "수입",
             "amount": amount,      
             "date": date
@@ -126,6 +127,14 @@ def calculate_balance():
 
 # 수입/지출 입력 → 내역 보기 → 잔액 확인
 # 기본 가계부가 동작하는지 확인
+
+def modify_transaction():
+# 거래 수정 실제 기능
+    pass
+
+def delete_transaction():
+# 거래 삭제 실제 기능
+    pass
 
 def save_data():
     # JSON 파일로 저장
