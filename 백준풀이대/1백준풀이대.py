@@ -1,6 +1,5 @@
 # 🎯 함수 개발 순서
 # 📅 1일차: 기본 조회 기능
-# python1. show_transactions()     # 가장 기본! (30분)
 # 2. calculate_balance()     # 간단한 계산 (20분)
 # 📅 2일차: 수정/삭제 기능
 # python3. modify_transaction()    # 거래 수정 (40분)

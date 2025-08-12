@@ -107,24 +107,34 @@ def add_income():
     except ValueError:
         print("올바른 값을 입력해주세요.")
 
-# 수입/지출 몇 개 입력해보기
-# transactions 리스트에 잘 저장되는지 확인 //확인완료
-
 def show_transactions():
-    # 거래 내역 보기
-    # 목표: 모든 거래 내역 보기
-# 예쁘게 표 형태로 출력
-# 날짜, 종류, 금액, 카테고리, 메모
-# 체크: 입력한 거래들이 잘 보이는가?
-    pass
-
+    if not transactions:
+        print("거래 내역이 없습니다.")
+        return
+    
+    print("ID  | 날짜     | 종류   |     금액     | 카테고리   | 메모")
+    print("-" * 60)
+    
+    for transaction in transactions:
+        print(f"{transaction['id']:<3} | "          
+              f"{transaction['date']:<8} | "         
+              f"{transaction['type']:^4} | "         
+              f"{transaction['amount']:>10,}원 | "    
+              f"{transaction.get('category', ''):<8} , "  
+              f"{transaction.get('memo', '')}")      
+        
 def calculate_balance():
+    balance = 0
     # 잔액 계산
     # 목표: 현재 잔액 계산
 # 모든 수입 - 모든 지출
 # 체크: 잔액이 정확히 계산되는가?
-    pass
-
+    for transaction in transactions:
+        if transaction['type'] == "지출":
+            balance -= transaction['amount']
+        elif transaction['type'] == "수입":
+            balance += transaction['amount']
+    return balance
 # 수입/지출 입력 → 내역 보기 → 잔액 확인
 # 기본 가계부가 동작하는지 확인
 
