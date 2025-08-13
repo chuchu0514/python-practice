@@ -1,8 +1,32 @@
 import datetime
+import json
+
+class Stack:
+    def __init__(self):
+        self.items = []
+    
+    def push(self, item):
+        self.items.append(item)
+    
+    def pop(self):
+        if self.is_empty():
+            return None
+        return self.items.pop()
+    
+    def peek(self):
+        if self.is_empty():
+            return None
+        return self.items[-1]
+    
+    def is_empty(self):
+        return len(self.items) == 0
+    
+    def size(self):
+        return len(self.items)
 
 transactions = []  # 거래 리스트
-
-
+undo_stack = Stack()
+   
 
 def show_menu():
     print("=== 진성이의 가계부 ===")
@@ -18,24 +42,24 @@ def manage_transactions():
     print("=== 거래 관리 ===")
     print("1. 거래 수정")
     print("2. 거래 삭제") 
-    print("3. 삭제된 거래 복구")  # ← 여기서 스택 활용!
+    print("3. 되돌리기") 
     print("4. 돌아가기")
     choice = input("입력: ")
     return choice
 
 def add_expense():
-    # 금액 입력 (반복)
+   
     while True:
         try:
             amount = int(input("지출 금액: "))
             if amount > 0:
                 break
             else:
-                print("❌ 0보다 큰 금액을 입력하세요!")
+                print("0보다 큰 금액을 입력하세요!")
         except ValueError:
-            print("❌ 숫자만 입력하세요!")
+            print("숫자만 입력하세요!")
     
-    # 카테고리 선택 (반복)
+    
     expense_categories = ["식비", "교통비", "생활비", "취미", "데이트", "저축", "필수품", "기타"]
     while True:
         try:
@@ -47,22 +71,22 @@ def add_expense():
                 category = expense_categories[cat_choice - 1]
                 break
             else:
-                print(f"❌ 1~{len(expense_categories)} 사이의 숫자를 입력하세요!")
+                print(f"1~{len(expense_categories)} 사이의 숫자를 입력하세요!")
         except ValueError:
-            print("❌ 숫자만 입력하세요!")
+            print("숫자만 입력하세요!")
     
     memo = input("메모: ")  
     
-    # 날짜 입력 (반복)
+  
     while True:
         try:
             date = input("날짜(YYYY-MM): ")
             datetime.datetime.strptime(date, "%Y-%m")
             break
         except ValueError:
-            print("❌ 올바른 날짜 형식을 입력하세요! (예: 2024-03)")
+            print("올바른 날짜 형식을 입력하세요! (예: 2024-03)")
     
-    # 거래 저장
+   
     transaction = {
         "id": len(transactions) + 1,
         "type": "지출",
@@ -72,13 +96,12 @@ def add_expense():
         "date": date
     }
     transactions.append(transaction)
-    print(f"✅ 지출 {amount}원이 추가되었습니다!")
+    print(f"지출 {amount}원이 추가되었습니다!")
+    save_data()
+    return
 
 def add_income():
-    # 수입 추가
-    # 목표: 수입 입력받기
-# add_expense()와 비슷하지만 수입 카테고리 사용
-# 체크: 수입이 제대로 입력되는가?
+
     try:
         while True:
             try:
@@ -86,16 +109,16 @@ def add_income():
                 if amount > 0:
                     break
                 else:
-                    print("❌ 0보다 큰 금액을 입력하세요!")
+                    print("0보다 큰 금액을 입력하세요!")
             except ValueError:
-                print("❌ 숫자만 입력하세요!")
+                print("숫자만 입력하세요!")
         while True:
             try:
                 date = input("날짜(YYYY-MM): ")
                 datetime.datetime.strptime(date, "%Y-%m")
                 break
             except ValueError:
-                print("❌ 올바른 날짜 형식을 입력하세요! (예: 2024-03)")
+                print("올바른 날짜 형식을 입력하세요! (예: 2024-03)")
         transaction = {
             "id": len(transactions) + 1,
             "type": "수입",
@@ -103,16 +126,18 @@ def add_income():
             "date": date
         }
         transactions.append(transaction)
-        print(f"✅ 수입 {amount}원이 추가되었습니다!")
+        print(f"수입 {amount}원이 추가되었습니다!")
+        save_data()
+        return
     except ValueError:
         print("올바른 값을 입력해주세요.")
-
+    
 def show_transactions():
     if not transactions:
         print("거래 내역이 없습니다.")
         return
     
-    print("ID  | 날짜     | 종류   |     금액     | 카테고리   | 메모")
+    print("ID  | 날짜     | 종류   |     금액     | 카테고리 , 메모")
     print("-" * 60)
     
     for transaction in transactions:
@@ -125,43 +150,107 @@ def show_transactions():
         
 def calculate_balance():
     balance = 0
-    # 잔액 계산
-    # 목표: 현재 잔액 계산
-# 모든 수입 - 모든 지출
-# 체크: 잔액이 정확히 계산되는가?
+   
     for transaction in transactions:
         if transaction['type'] == "지출":
             balance -= transaction['amount']
         elif transaction['type'] == "수입":
             balance += transaction['amount']
     return balance
-# 수입/지출 입력 → 내역 보기 → 잔액 확인
-# 기본 가계부가 동작하는지 확인
 
 def modify_transaction():
-# 거래 수정 실제 기능
-    pass
+    if not transactions:
+        print("수정할 거래가 없습니다.")
+        return
+   
+    show_transactions()
 
+    while True: 
+        try:   
+            choice_ID = int(input("ID를 입력하세요:"))
+            found = False
+
+            for transaction in transactions:
+                if transaction["id"] == choice_ID:
+                    found = True
+                    break
+
+            if found:
+                break
+            else:
+                print("존재하지 않는 ID입니다.")        
+        except ValueError:
+            print("올바른 숫자를 입력하세요.")
+
+    while True:
+        choice_modify = input("수정할 항목을 선택하세요 (date/type/amount/category/memo): ")
+        if choice_modify in ["date", "type", "amount", "category", "memo"]:
+            break
+        else:
+            print("올바른 항목을 선택하세요!")
+
+    modify_value = input("수정할 내용을 입력하세요:")
+    for transaction in transactions:
+        if transaction["id"] == choice_ID:
+            transaction[choice_modify] = modify_value
+            print("수정 완료")
+            save_data()
+            return
+             
 def delete_transaction():
-# 거래 삭제 실제 기능
-    pass
+    if not transactions:
+        print("삭제할 거래가 없습니다.")
+        return
+   
+    show_transactions()
+
+    while True: 
+        try:   
+            choice_ID = int(input("삭제할 거래의 ID를 입력하세요: "))
+            found_transaction = None
+
+            for transaction in transactions:
+                if transaction["id"] == choice_ID:
+                    found_transaction = transaction
+                    break
+
+            if found_transaction:
+                break
+            else:
+                print("존재하지 않는 ID입니다.")        
+        except ValueError:
+            print("올바른 숫자를 입력하세요.")
+    
+    
+    transactions.remove(found_transaction)
+    print(f"ID {choice_ID} 거래가 삭제되었습니다!")
+    save_data()
+    return
 
 def save_data():
-    # JSON 파일로 저장
-    # 목표: JSON 파일로 저장
-# transactions 리스트를 파일에 저장
-# 체크: 파일이 생성되고 데이터가 저장되는가?
-    pass
 
+    try:
+        with open('file_storage/ledger.json', 'w', encoding='utf-8') as file:
+            json.dump(transactions, file, ensure_ascii=False, indent=2)
+        print("데이터가 저장되었습니다.")
+    except Exception as e:
+        print(f"저장실패: {e}")
+    
 def load_data():
-    # JSON 파일에서 불러오기
-    # 목표: JSON 파일에서 불러오기
-# 파일이 없으면 에러 처리
-# 체크: 저장한 데이터가 제대로 불러와지는가?
-    pass
-
-# 거래 입력 → 저장 → 프로그램 종료 → 재시작 → 불러오기
-# 데이터가 유지되는지 확인
+    global transactions
+    try:
+        with open('file_storage/ledger.json', 'r', encoding='utf-8') as file:
+            transactions = json.load(file)
+        print("데이터를 불러왔습니다.")
+    except FileNotFoundError:
+        print("📁 저장된 데이터가 없습니다. 새로 시작합니다.")
+        transactions = []
+    except json.JSONDecodeError:
+        print("❌ 파일이 손상되었습니다.")
+        transactions = []
+    except Exception as e:
+        print(f"로드실패: {e}")
+        transactions = []
 
 def get_monthly_data(year, month):
     # 목표: 특정 월의 거래만 필터링
@@ -181,29 +270,18 @@ def show_category_analysis():
 # 체크: "식비가 점점 늘고 있나?" 알 수 있는가?
     pass
 
-# 기존에 만든 Stack 클래스 사용
-# undo_stack, redo_stack 생성
-
-def undo_transaction():
+def undo_transaction(transactions):
     # 목표: 잘못 입력한 거래 되돌리기
 # 모든 거래 변경 시 스택에 상태 저장
 # 체크: 실수로 입력한 거래를 되돌릴 수 있나?
+ 
+    if undo_stack.is_empty():
+        print("더 이상 실행 취소할 것이 없습니다!")
+        return
+    
     pass
 
-def redo_transaction():
-    # 목표: 되돌린 거래 다시 적용
-# 체크: 되돌린 거래를 다시 되돌릴 수 있나?
-    pass
 
-def compare_months():
-    # 목표: 두 달 비교하기
-# "3월 vs 2월 식비 비교"
-# 체크: 증감률까지 계산되는가?
-    pass
-
-# 모든 기능 종합 테스트
-# 에러 처리 추가
-# 사용자 경험 개선
 
 def main():
     while True:
@@ -220,19 +298,20 @@ def main():
         elif choice == '5':
             choice2 = manage_transactions()
             if choice2 == '1':
-                pass
+                modify_transaction()
             elif choice2 == '2':
-                pass
+                delete_transaction()
             elif choice2 == '3':
-                pass
+                undo_transaction()
             elif choice2 == '4':
                 pass
-
         elif choice == '6':
+            save_data()
             return
     
     
 
 if __name__ == "__main__":
+    load_data()
     main()
     print("종료되었습니다.")
