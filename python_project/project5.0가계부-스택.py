@@ -30,12 +30,19 @@ undo_stack = Stack()
 
 def show_menu():
     print("=== 진성이의 가계부 ===")
+    balance = calculate_balance()
+    if balance >= 0:
+        print(f"💰 현재 잔액: +{balance:,}원")
+    else:
+        print(f"💸 현재 잔액: {balance:,}원")
+    print("-" * 25)
     print("1. 수입 추가")
     print("2. 지출 추가") 
     print("3. 거래 내역 보기")
     print("4. 월별 분석")
     print("5. 거래 관리")     
     print("6. 종료")
+    print("7. 거래기록 초기화.")
     print("=" * 25)
 
 def manage_transactions():
@@ -95,6 +102,7 @@ def add_expense():
         "memo": memo,
         "date": date
     }
+    save_stack()
     transactions.append(transaction)
     print(f"지출 {amount}원이 추가되었습니다!")
     save_data()
@@ -125,6 +133,7 @@ def add_income():
             "amount": amount,      
             "date": date
         }
+        save_stack()
         transactions.append(transaction)
         print(f"수입 {amount}원이 추가되었습니다!")
         save_data()
@@ -188,7 +197,7 @@ def modify_transaction():
             break
         else:
             print("올바른 항목을 선택하세요!")
-
+    save_stack()
     modify_value = input("수정할 내용을 입력하세요:")
     for transaction in transactions:
         if transaction["id"] == choice_ID:
@@ -221,7 +230,7 @@ def delete_transaction():
         except ValueError:
             print("올바른 숫자를 입력하세요.")
     
-    
+    save_stack()
     transactions.remove(found_transaction)
     print(f"ID {choice_ID} 거래가 삭제되었습니다!")
     save_data()
@@ -230,7 +239,7 @@ def delete_transaction():
 def save_data():
 
     try:
-        with open('file_storage/ledger.json', 'w', encoding='utf-8') as file:
+        with open('ledger.json', 'w', encoding='utf-8') as file:
             json.dump(transactions, file, ensure_ascii=False, indent=2)
         print("데이터가 저장되었습니다.")
     except Exception as e:
@@ -239,7 +248,7 @@ def save_data():
 def load_data():
     global transactions
     try:
-        with open('file_storage/ledger.json', 'r', encoding='utf-8') as file:
+        with open('ledger.json', 'r', encoding='utf-8') as file:
             transactions = json.load(file)
         print("데이터를 불러왔습니다.")
     except FileNotFoundError:
@@ -248,29 +257,45 @@ def load_data():
     except json.JSONDecodeError:
         print("❌ 파일이 손상되었습니다.")
         transactions = []
+        save_data()
     except Exception as e:
         print(f"로드실패: {e}")
         transactions = []
 
 def get_monthly_data(year, month):
-    # 목표: 특정 월의 거래만 필터링
-# 헬퍼 함수 (다른 함수들이 사용할 예정)
-# 체크: 3월 데이터만 정확히 가져오는가?
-    pass
+    result = []
+    date = f"{year}-{month:02d}" 
+    for transaction in transactions:
+        if transaction['date'] == date and transaction['type'] == '지출':
+            result.append(transaction)
+    return result
 
-def show_monthly_summary():
-    # 목표: 특정 월 요약 보기 (핵심 기능!)
-# 년/월 입력받기 → 해당 월 수입/지출/카테고리별 집계
-# 체크: "3월에 식비 얼마 썼나?" 답할 수 있는가?
-    pass
+def show_monthly_summary(year, month):
+    filtered_data = get_monthly_data(year, month)
+    if not filtered_data:  # 빈 데이터 체크 추가
+        print(f"{year}-{month:02d}월에는 지출이 없습니다.")
+        return
+    
+    category_sum = {}  
 
-def show_category_analysis():
-    # 목표: 카테고리별 월 분석
-# 특정 카테고리의 월별 지출 추이
-# 체크: "식비가 점점 늘고 있나?" 알 수 있는가?
-    pass
+    for transaction in filtered_data:
+        category = transaction['category']  
+        amount = transaction['amount']    
+        category_sum[category] = category_sum.get(category, 0) + amount
 
-def undo_transaction(transactions):
+    print(f"\n📊 {year}-{month:02d}월 지출 분석")
+    print("-" * 30)
+    for category, total in category_sum.items():
+        print(f"{category}: {total:,}원")
+    print("-" * 30)
+    print(f"총 지출: {sum(category_sum.values()):,}원")
+
+def save_stack():
+    """변경 전 상태를 스택에 저장"""
+
+    undo_stack.push(transactions.copy())
+
+def undo_transaction():
     # 목표: 잘못 입력한 거래 되돌리기
 # 모든 거래 변경 시 스택에 상태 저장
 # 체크: 실수로 입력한 거래를 되돌릴 수 있나?
@@ -279,11 +304,16 @@ def undo_transaction(transactions):
         print("더 이상 실행 취소할 것이 없습니다!")
         return
     
-    pass
+    global transactions
+    transactions = undo_stack.pop()    
+    print("마지막 작업이 되돌려졌습니다.")
+    save_data()
+    show_transactions()
 
 
 
 def main():
+    global transactions
     while True:
         show_menu()
         choice = input("입력: ")
@@ -294,7 +324,8 @@ def main():
         elif choice == '3':
             show_transactions()
         elif choice == '4':
-            pass
+            year, month = map(int(input("ex 2024 03 띄어쓰기로 구분 연도와 월을 입력하세요: ").split()))
+            show_monthly_summary(year, month)
         elif choice == '5':
             choice2 = manage_transactions()
             if choice2 == '1':
@@ -305,13 +336,28 @@ def main():
                 undo_transaction()
             elif choice2 == '4':
                 pass
-        elif choice == '6':
-            save_data()
+        elif choice == '6':          
             return
+        elif choice == '7':
+            while True:
+                choice_2 = input("정말 초기화 하겠습니까?  (y/n):")
+                if choice_2 == 'y':
+                    save_stack()
+                    transactions = []
+                    save_data()
+                    print("✅ 모든 거래 기록이 초기화되었습니다! 실수로 삭제하였다면 거래관리-> 되돌리기를 이용해주세요.")
+                    break
+                elif choice_2 == 'n':
+                    print("초기화를 취소했습니다.")
+                    pass
+                else:
+                    print("y 또는 n을 입력하세요.")
+
     
     
 
 if __name__ == "__main__":
     load_data()
     main()
+    save_data()
     print("종료되었습니다.")
