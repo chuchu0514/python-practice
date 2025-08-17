@@ -36,8 +36,8 @@ def show_menu():
     else:
         print(f"💸 현재 잔액: {balance:,}원")
     print("-" * 25)
-    print("1. 수입 추가")
-    print("2. 지출 추가") 
+    print("1. 지출 추가")
+    print("2. 수입 추가") 
     print("3. 거래 내역 보기")
     print("4. 월별 분석")
     print("5. 거래 관리")     
@@ -81,8 +81,7 @@ def add_expense():
                 print(f"1~{len(expense_categories)} 사이의 숫자를 입력하세요!")
         except ValueError:
             print("숫자만 입력하세요!")
-    
-    memo = input("메모: ")  
+     
     
   
     while True:
@@ -99,7 +98,6 @@ def add_expense():
         "type": "지출",
         "amount": amount,      
         "category": category,
-        "memo": memo,
         "date": date
     }
     save_stack()
@@ -146,7 +144,7 @@ def show_transactions():
         print("거래 내역이 없습니다.")
         return
     
-    print("ID  | 날짜     | 종류   |     금액     | 카테고리 , 메모")
+    print("ID  | 날짜     | 종류   |     금액     | 카테고리 ")
     print("-" * 60)
     
     for transaction in transactions:
@@ -154,8 +152,7 @@ def show_transactions():
               f"{transaction['date']:<8} | "         
               f"{transaction['type']:^4} | "         
               f"{transaction['amount']:>10,}원 | "    
-              f"{transaction.get('category', ''):<8} , "  
-              f"{transaction.get('memo', '')}")      
+              f"{transaction.get('category', ''):<8}")  
         
 def calculate_balance():
     balance = 0
@@ -192,8 +189,8 @@ def modify_transaction():
             print("올바른 숫자를 입력하세요.")
 
     while True:
-        choice_modify = input("수정할 항목을 선택하세요 (date/type/amount/category/memo): ")
-        if choice_modify in ["date", "type", "amount", "category", "memo"]:
+        choice_modify = input("수정할 항목을 선택하세요 (date/type/amount/category): ")
+        if choice_modify in ["date", "type", "amount", "category"]:
             break
         else:
             print("올바른 항목을 선택하세요!")
@@ -324,7 +321,7 @@ def main():
         elif choice == '3':
             show_transactions()
         elif choice == '4':
-            year, month = map(int(input("ex 2024 03 띄어쓰기로 구분 연도와 월을 입력하세요: ").split()))
+            year, month = map(int, input("ex 2024 03 띄어쓰기로 구분 연도와 월을 입력하세요: ").split())
             show_monthly_summary(year, month)
         elif choice == '5':
             choice2 = manage_transactions()
