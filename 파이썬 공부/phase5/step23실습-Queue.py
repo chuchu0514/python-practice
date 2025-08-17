@@ -42,24 +42,39 @@ class BankTicketSystem:
     
     def issue_ticket(self, customer_name):
         """번호표 발급"""
+        self.queue.enqueue(f"{self.ticket_number}. {customer_name}님")
+        print(f"대기번호: {self.ticket_number}. {customer_name}님")
+        self.ticket_number += 1
         # TODO: 현재 번호와 고객명으로 표 만들기
         # TODO: 큐에 추가
         # TODO: 번호 증가
         # TODO: 발급 메시지 출력
-        pass
+       
     
     def call_next_customer(self):
         """다음 고객 호출"""
+        if self.queue.is_empty():
+            print("대기 고객이 없습니다.")
+            return
+        
+        next_customer = self.queue.dequeue()  # 빼면서 저장
+        print(f"📢 {next_customer} 창구로 오세요!")
         # TODO: 큐가 비어있으면 "대기 고객 없음" 메시지
         # TODO: 큐에서 다음 고객 꺼내기
         # TODO: 호출 메시지 출력
-        pass
+        
     
     def show_waiting_list(self):
         """대기 명단 보기"""
+        print(f"대기 중인 고객 수 : {self.queue.size()}명")
+
+        if self.queue.is_empty():
+            print("대기 중인 고객이 없습니다.")
+        else:
+            print(f"다음 순서 {self.queue.front()}")
+
         # TODO: 대기 중인 고객 수 출력
         # TODO: 다음 순서 고객 이름 출력 (front() 사용)
-        pass
 
 # 테스트
 print("\n=== 은행 번호표 시스템 테스트 ===")
@@ -99,21 +114,33 @@ class ChatMessageProcessor:
         """메시지 수신"""
         # TODO: "sender: message" 형태로 큐에 추가
         # TODO: 수신 메시지 출력
-        pass
+        self.message_queue.enqueue(f"{sender}: {message}")
+        print("메세지 수신 완료.")
+       
     
     def process_message(self):
         """메시지 처리 (화면에 표시)"""
+        if self.message_queue.is_empty():
+            print("처리할 메세지 없음.")
+            return
+        result = self.message_queue.dequeue()
+        print(f"{result}")
+        print("메세지 처리 완료.")
         # TODO: 큐가 비어있으면 "처리할 메시지 없음"
         # TODO: 큐에서 메시지 꺼내서 처리
         # TODO: 처리 완료 메시지 출력
-        pass
+       
     
     def show_pending_messages(self):
         """대기 중인 메시지 확인"""
         # TODO: 대기 중인 메시지 개수 출력
         # TODO: 다음 처리할 메시지 출력 (front() 사용)
-        pass
-
+        print(f"대기 중인 메세지: {self.message_queue.size()}개")
+        if self.message_queue.is_empty():
+            print("처리할 메세지 없음.")
+        else:
+            print(f"다음 메세지: {self.message_queue.front()}")
+       
 # 테스트
 print("\n=== 채팅 메시지 처리 시스템 테스트 ===")
 chat = ChatMessageProcessor()
@@ -157,21 +184,39 @@ class WebServerRequestHandler:
         # TODO: 큐에 추가
         # TODO: 요청 ID 증가
         # TODO: 접수 또는 거부 메시지 출력
-        pass
+        if self.request_queue.size() >= self.max_capacity:
+            print(f"요청이 너무 많습니다. 최대 용량: {self.max_capacity}")
+            return
+        self.request_queue.enqueue(f"ID.{self.request_id} {user_ip}({request_type})")
+        print(f"✅ 요청 접수: ID.{self.request_id}")
+        self.request_id += 1
     
     def process_request(self):
         """요청 처리"""
         # TODO: 큐가 비어있으면 "처리할 요청 없음"
+        if self.request_queue.is_empty():
+            print("처리할 요청 없음.")
+            return
+        
         # TODO: 큐에서 요청 꺼내서 처리
+        result = self.request_queue.dequeue()
+        print(f"{result}")
+
         # TODO: 처리 완료 메시지 출력
-        pass
+
     
     def show_server_status(self):
         """서버 상태 확인"""
+        print(f"대기인원: {self.request_queue.size()}")
+        if self.request_queue.is_empty():
+            print("다음 처리 예정: 없음")
+        else:
+            print(f"다음 처리 예정: {self.request_queue.front()}")
+        print(f"서버 용량 상태{self.request_queue.size() / self.max_capacity * 100:.2f}% ")
         # TODO: 현재 대기 중인 요청 수 출력
         # TODO: 다음 처리할 요청 정보 출력
         # TODO: 서버 용량 상태 출력 (몇 % 사용 중인지)
-        pass
+
 
 # 테스트
 print("\n=== 웹서버 요청 처리 시스템 테스트 ===")
@@ -210,24 +255,42 @@ class GameMatchingSystem:
     
     def join_queue(self, player_name, level):
         """매칭 대기열 참가"""
+        self.waiting_queue.enqueue(f"{player_name}, {level}레벨")
+        print(f"{player_name}님이 대기열에 참가하였습니다.")
+        self.check_for_match()
         # TODO: 플레이어 정보(이름, 레벨) 큐에 추가
         # TODO: 대기열 참가 메시지 출력
         # TODO: 자동으로 매칭 체크 (check_for_match 호출)
-        pass
-    
+   
+     
     def check_for_match(self):
         """매칭 가능한지 체크하고 게임 시작"""
+        if self.waiting_queue.size() >= self.players_per_game:
+            for i in range(self.players_per_game):
+                self.waiting_queue.dequeue()
+            print(f"{self.game_id}번 게임 시작!")
+            self.game_id += 1
+        else:
+            print("인원 수가 부족합니다.")
         # TODO: 대기 중인 플레이어가 게임 정원보다 많거나 같으면
         # TODO: 정원만큼 플레이어를 큐에서 빼서 게임 시작
         # TODO: 게임 ID 증가
-        pass
     
     def show_queue_status(self):
         """대기열 상태 확인"""
         # TODO: 현재 대기 중인 플레이어 수 출력
         # TODO: 게임 시작까지 몇 명 더 필요한지 출력
         # TODO: 다음 순서 플레이어 정보 출력
-        pass
+        
+        print(f"{self.waiting_queue.size()}명 대기 중")
+        print(f"게임 시작까지 {self.players_per_game - self.waiting_queue.size()}명 필요.")
+        if self.waiting_queue.is_empty():
+            print("대기열: 비어있음")
+        else:
+            print("현재 대기열:")
+            for i, player in enumerate(self.waiting_queue.items):
+                print(f"  {i+1}. {player}")
+
 
 # 테스트
 print("\n=== 게임 매칭 시스템 테스트 ===")
