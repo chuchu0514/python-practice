@@ -128,7 +128,7 @@ class RestaurantWaitingSystem:
                     print("대기 중인 손님이 없습니다.")
                     return
                 next_customer = self.waiting_queue["2인석"].dequeue()
-                print(f"{next_customer["이름"]}님 주문 도와드리겠습니다.")
+                print(f"{next_customer['이름']}님 주문 도와드리겠습니다.")
                 self.served_customer += 1
                 break
             elif choice == "2":
@@ -136,7 +136,7 @@ class RestaurantWaitingSystem:
                     print("대기 중인 손님이 없습니다.")
                     return
                 next_customer = self.waiting_queue["4인석"].dequeue()
-                print(f"{next_customer["이름"]}님 주문 도와드리겠습니다.")
+                print(f"{next_customer['이름']}님 주문 도와드리겠습니다.")
                 self.served_customer += 1
                 break
 
@@ -145,7 +145,7 @@ class RestaurantWaitingSystem:
                     print("대기 중인 손님이 없습니다.")
                     return
                 next_customer = self.waiting_queue["6인석"].dequeue()
-                print(f"{next_customer["이름"]}님 주문 도와드리겠습니다.")
+                print(f"{next_customer['이름']}님 주문 도와드리겠습니다.")
                 self.served_customer += 1
                 break
 
@@ -175,7 +175,6 @@ class RestaurantWaitingSystem:
     
         print(f"\n📊 총 대기: {self.get_total_waiting()}팀")
         # TODO: 전체 대기 팀 수와 예상 대기시간
-
     
     def cancel_waiting(self):
         """웨이팅 취소"""
@@ -188,29 +187,33 @@ class RestaurantWaitingSystem:
         for table_type, queue in self.waiting_queue.items():
             for customer in queue.items:
                 if customer["번호"] == target_number:
+                    name = customer["이름"]
                     temp_queue = Queue()
                     for customer in self.waiting_queue[table_type].items:
                         temp_queue.enqueue(customer)
                     temp2_queue = Queue()
-                    count = int(choice) - self.served_customer + 1
-                    for i in count:
+                    count = int(choice) - self.served_customer 
+                    for i in range(count):
                         delete = temp_queue.dequeue()
-                        if i == count:
+                        if i == count - 1:
                             continue
                         temp2_queue.enqueue(delete)
-                    for i in temp_queue.size():
+                    while not temp_queue.is_empty():
                         delete = temp_queue.dequeue()
                         temp2_queue.enqueue(delete)
+                    self.waiting_queue[table_type] = temp2_queue
+                    if name:  # name이 정의됐는지 체크
+                        print(f"{name}님 취소 완료")
+                    else:
+                        print("취소 완료")
+                    return
+        print("번호가 존재하지 않습니다.")
 
-                    
-
-        for i in count:
-            temp_queue.dequeue()
         # TODO: 모든 테이블 큐에서 해당 번호 찾아서 제거
         # 힌트: 큐에서 특정 항목 제거는 까다로움. 임시 큐 활용 필요
         
         # TODO: 취소 완료/실패 메시지
-        pass
+
     
     def show_daily_statistics(self):
         """오늘 통계"""
