@@ -156,7 +156,27 @@ class RestaurantWaitingSystem:
         # TODO: 큐가 비어있으면 "대기 고객 없음" 메시지
         
         # TODO: 호출 성공시 고객 정보 표시 + "📞 문자 발송" 시뮬레이션
-       
+        # 이렇게 줄일 수 있었음
+        #     table_map = {"1": "2인석", "2": "4인석", "3": "6인석"}
+        
+        # while True:
+        #     choice = input("1. 2인석  2. 4인석  3. 6인석: ")
+            
+        #     if choice not in table_map:
+        #         print("유효한 숫자를 입력해주세요.")
+        #         continue
+            
+        #     table_type = table_map[choice]
+            
+        #     if self.waiting_queue[table_type].is_empty():
+        #         print("대기 중인 손님이 없습니다.")
+        #         return
+            
+        #     next_customer = self.waiting_queue[table_type].dequeue()
+        #     print(f"{next_customer['이름']}님 주문 도와드리겠습니다.")
+        #     self.served_customer += 1
+        #     break 
+
     def show_waiting_status(self):
         """대기 현황 확인"""
         # TODO: 테이블별 대기 현황 표시
@@ -166,16 +186,17 @@ class RestaurantWaitingSystem:
         #   2. 이영희님 (2명) - 10분 전 접수  
         #   3. 박민수님 (2명) - 5분 전 접수
         for table_type, queue in self.waiting_queue.items():
+            estimated = self.calculate_estimated_waiting_time(table_type)
             if queue.size() > 0:
-                print(f"🪑 {table_type}: {queue.size()}팀 대기")
+                print(f"🪑 {table_type}: {queue.size()}팀 대기 (예상: {estimated}분)")
                 for customer in queue.items:
                     print(f"  {customer['번호']}. {customer['이름']}님 ({customer['인원']}명)")
             else:
                 print(f"🪑 {table_type}: 대기 없음")
     
         print(f"\n📊 총 대기: {self.get_total_waiting()}팀")
-        # TODO: 전체 대기 팀 수와 예상 대기시간
-    
+
+
     def cancel_waiting(self):
         """웨이팅 취소"""
         # TODO: 취소할 웨이팅 번호 입력받기
@@ -217,26 +238,29 @@ class RestaurantWaitingSystem:
     
     def show_daily_statistics(self):
         """오늘 통계"""
+        waiting_customer = self.get_total_waiting()
         # TODO: 오늘 접수된 총 고객 수
-        
+        print(f"오늘 접수된 총 고객 수: {self.total_customer}")
         # TODO: 서비스 완료된 고객 수
-        
+        print(f"서비스 완료된 고객 수: {self.served_customer}")
         # TODO: 현재 대기 중인 고객 수
-        
+        print(f"현재 대기 중인 고객 수: {waiting_customer}")
         # TODO: 테이블별 이용 현황
-        
-        # TODO: 평균 대기시간 (선택사항)
-        pass
-    
+        for type in self.waiting_queue.keys():
+            print(f"테이블별 이용 현황 {type}:{self.waiting_queue[type].size()}")
+
     def calculate_estimated_waiting_time(self, table_type):
-        """예상 대기시간 계산"""
-        # TODO: 테이블별 평균 식사시간 가정
-        # 2인석: 60분, 4인석: 90분, 6인석: 120분
+        """특정 테이블의 예상 대기시간 계산"""
+        avg_time = {
+            "2인석": 60,
+            "4인석": 90, 
+            "6인석": 120
+        }
         
-        # TODO: 앞에 대기하는 팀 수 * 평균 식사시간
+        waiting_teams = self.waiting_queue[table_type].size()
+        estimated_time = waiting_teams * avg_time[table_type]
         
-        # TODO: 분 단위로 반환
-        pass
+        return estimated_time  
     
 
 
