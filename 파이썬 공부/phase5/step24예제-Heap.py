@@ -229,7 +229,7 @@ class SkillCooldownManager:
         
         while (not self.cooldowns.is_empty() and 
                self.cooldowns.peek()[0] <= self.current_time):
-            ready_time, skill_name = self.cooldowns.extract_min()
+            _ , skill_name = self.cooldowns.extract_min()
             print(f"✅ {skill_name} 재사용 가능!")
     
     def show_cooldowns(self):
