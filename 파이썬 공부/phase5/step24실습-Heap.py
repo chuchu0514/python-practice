@@ -152,81 +152,99 @@ er.show_waiting_patients()
 
 print("\n" + "="*50)
 
-# # 문제 2: 작업 스케줄러
-# print("📝 문제 2: 작업 스케줄러 시스템")
-# print("컴퓨터 작업들을 우선순위 순서로 처리하는 시스템")
-# print("기능: 작업 추가, 작업 실행, 대기열 확인")
+# 문제 2: 작업 스케줄러
+print("📝 문제 2: 작업 스케줄러 시스템")
+print("컴퓨터 작업들을 우선순위 순서로 처리하는 시스템")
+print("기능: 작업 추가, 작업 실행, 대기열 확인")
 
-# class TaskScheduler:
-#     def __init__(self):
-#         # TODO: 우선순위 큐 생성
-#         print("💻 작업 스케줄러 시작!")
+class TaskScheduler:
+    def __init__(self):
+        # TODO: 우선순위 큐 생성
+        self.task_heap = MinHeap()
+        print("💻 작업 스케줄러 시작!")
     
-#     def add_task(self, task_name, priority, estimated_time):
-#         """작업 추가 (priority: 낮을수록 높은 우선순위)"""
-#         # TODO: (우선순위, 작업명, 예상시간) 튜플을 힙에 추가
-#         # TODO: 추가 메시지 출력
-#         pass
+    def add_task(self, task_name, priority, estimated_time):
+        """작업 추가 (priority: 낮을수록 높은 우선순위)"""
+        # TODO: (우선순위, 작업명, 예상시간) 튜플을 힙에 추가
+        # TODO: 추가 메시지 출력
+        self.task_heap.insert((priority, task_name, estimated_time))
+        print(f"'{task_name}' 작업이 추가되었습니다. (우선순위: {priority}, 예상시간: {estimated_time}분)")
     
-#     def execute_next_task(self):
-#         """다음 작업 실행"""
-#         # TODO: 힙이 비어있으면 "실행할 작업 없음"
-#         # TODO: 가장 높은 우선순위 작업 실행
-#         # TODO: 실행 메시지 출력
-#         pass
+    def execute_next_task(self):
+        """다음 작업 실행"""
+        if self.task_heap.is_empty():
+            print("실행할 작업 없음.")
+            return
+        _, task_name, estimated_time = self.task_heap.extract_min()
+        print(f"{task_name} 실행, 예상시간: {estimated_time}분")
+        # TODO: 힙이 비어있으면 "실행할 작업 없음"
+        # TODO: 가장 높은 우선순위 작업 실행
+        # TODO: 실행 메시지 출력
     
-#     def show_task_queue(self):
-#         """작업 대기열 확인"""
-#         # TODO: 대기 중인 작업 수 출력
-#         # TODO: 다음 실행 작업 출력
-#         # TODO: 전체 대기 시간 계산 (모든 작업의 예상시간 합계)
-#         pass
+    def show_task_queue(self):
+        """작업 대기열 확인"""
+        if self.task_heap.is_empty():
+            print("실행할 작업 없음.")
+            return
+        print(f"대기 중인 작업 수: {self.task_heap.size()}")
+        _, task_name, estimated_time = self.task_heap.peek()
+        print(f"다음 실행 작업: {task_name} 예상시간: {estimated_time}분 ")
+        time = 0
+        for _, _, estimated_time in self.task_heap.heap:
+            time += estimated_time
+        print(f"전체 대기 시간: {time}분")
 
-# # 테스트
-# print("\n=== 작업 스케줄러 테스트 ===")
-# scheduler = TaskScheduler()
+        # TODO: 대기 중인 작업 수 출력
+        # TODO: 다음 실행 작업 출력
+        # TODO: 전체 대기 시간 계산 (모든 작업의 예상시간 합계)
+       
 
-# print("\n--- 작업 추가 ---")
-# scheduler.add_task("이메일 전송", 3, 2)
-# scheduler.add_task("데이터 백업", 1, 30)  # 높은 우선순위
-# scheduler.add_task("보고서 작성", 5, 10)
-# scheduler.add_task("보안 검사", 2, 15)
+# 테스트
+print("\n=== 작업 스케줄러 테스트 ===")
+scheduler = TaskScheduler()
 
-# print("\n--- 대기열 확인 ---")
-# scheduler.show_task_queue()
+print("\n--- 작업 추가 ---")
+scheduler.add_task("이메일 전송", 3, 2)
+scheduler.add_task("데이터 백업", 1, 30)  # 높은 우선순위
+scheduler.add_task("보고서 작성", 5, 10)
+scheduler.add_task("보안 검사", 2, 15)
 
-# print("\n--- 작업 실행 ---")
-# scheduler.execute_next_task()  # 데이터 백업 (우선순위 1)
-# scheduler.execute_next_task()  # 보안 검사 (우선순위 2)
-# scheduler.show_task_queue()
+print("\n--- 대기열 확인 ---")
+scheduler.show_task_queue()
 
-# print("\n" + "="*50)
+print("\n--- 작업 실행 ---")
+scheduler.execute_next_task()  # 데이터 백업 (우선순위 1)
+scheduler.execute_next_task()  # 보안 검사 (우선순위 2)
+scheduler.show_task_queue()
 
-# # 문제 3: 상위 K개 원소 찾기
-# print("📝 문제 3: 상위 K개 점수 찾기")
-# print("학생들의 점수에서 상위 K명의 점수를 찾는 시스템")
+print("\n" + "="*50)
 
-# def find_top_k_scores(scores, k):
-#     """상위 K개 점수 반환"""
-#     # TODO: 최대힙을 만들어야 하는데, MinHeap밖에 없음
-#     # 힌트: 점수에 -1을 곱해서 저장하면 최소힙이 최대힙처럼 동작!
-#     # TODO: 모든 점수를 힙에 추가 (-score로 변환해서)
-#     # TODO: K번 extract_min 해서 상위 K개 추출
-#     # TODO: 결과에서 다시 -1을 곱해서 원래 점수로 복원
-#     pass
+# 문제 3: 상위 K개 원소 찾기
+print("📝 문제 3: 상위 K개 점수 찾기")
+print("학생들의 점수에서 상위 K명의 점수를 찾는 시스템")
 
-# # 테스트
-# print("\n=== 상위 K개 점수 찾기 테스트 ===")
-# student_scores = [85, 92, 78, 96, 88, 75, 91, 83, 97, 80]
-# print(f"전체 점수: {student_scores}")
+def find_top_k_scores(scores, k):
+    """상위 K개 점수 반환"""
+    
+    # TODO: 최대힙을 만들어야 하는데, MinHeap밖에 없음
+    # 힌트: 점수에 -1을 곱해서 저장하면 최소힙이 최대힙처럼 동작!
+    # TODO: 모든 점수를 힙에 추가 (-score로 변환해서)
+    # TODO: K번 extract_min 해서 상위 K개 추출
+    # TODO: 결과에서 다시 -1을 곱해서 원래 점수로 복원
+    pass
 
-# top_3 = find_top_k_scores(student_scores, 3)
-# print(f"상위 3개 점수: {top_3}")  # [97, 96, 92] 순서로 나와야 함
+# 테스트
+print("\n=== 상위 K개 점수 찾기 테스트 ===")
+student_scores = [85, 92, 78, 96, 88, 75, 91, 83, 97, 80]
+print(f"전체 점수: {student_scores}")
 
-# top_5 = find_top_k_scores(student_scores, 5)
-# print(f"상위 5개 점수: {top_5}")
+top_3 = find_top_k_scores(student_scores, 3)
+print(f"상위 3개 점수: {top_3}")  # [97, 96, 92] 순서로 나와야 함
 
-# print("\n" + "="*50)
+top_5 = find_top_k_scores(student_scores, 5)
+print(f"상위 5개 점수: {top_5}")
+
+print("\n" + "="*50)
 
 # # 문제 4: 실시간 중간값 찾기 (도전 문제!)
 # print("📝 문제 4: 실시간 중간값 추적기 (도전!)")
