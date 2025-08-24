@@ -67,7 +67,7 @@ class MinHeap:
     def extract_min(self):
         """최솟값 제거하고 반환"""
         if len(self.heap) == 0:
-            print("❌ 응급실이 비어있습니다!")
+            print("힙이 비어있습니다!")
             return None
         
         item = self.heap[0]
@@ -107,5 +107,5 @@ class MinHeap:
             print("비어있습니다")
             return
         
-        print(f"🏥 현재 대상: {self.heap}")
+        print(f"   현재 대상: {self.heap}")
         print(f"   다음 대상: {self.heap[0]}")
