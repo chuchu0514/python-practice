@@ -78,7 +78,7 @@ def bubble_sort_simple(arr):
 
 # 테스트해보기
 print("\n=== 🫧 버블 정렬 테스트 ===")
-test_data = [64, 34, 25, 12, 22, 11, 90]
+test_data = [34, 64, 25, 12, 22, 11, 90]
 bubble_sort(test_data.copy())
 
 print("\n" + "="*50)
