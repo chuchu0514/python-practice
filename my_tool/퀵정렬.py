@@ -10,9 +10,10 @@ def partition(arr, low, high):
         
         # 현재 원소가 피벗보다 작거나 같으면
         if arr[j] <= pivot:
+            original_value = arr[j]
             i += 1
             arr[i], arr[j] = arr[j], arr[i]
-            print(f"{arr[j]}는 작음 → 교환 {arr}")
+            print(f"{original_value}는 작음 → 교환 {arr}")
         else:
             print(f"{arr[j]}는 큼 → 그대로")
     

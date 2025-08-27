@@ -12,7 +12,7 @@ print("3️⃣ 재귀: 왼쪽과 오른쪽을 각각 퀵 정렬")
 print("\n🎯 퀵 정렬 작동 원리:")
 print("[3, 6, 8, 10, 1, 2, 1]")
 print("피벗=3을 선택 → 3보다 작은 것 | 3 | 3보다 큰 것")
-print("[1, 2, 1] | 3 | [6, 8, 10]")
+print("[1, 2, 1] | 3 | [6, 8, 10]")                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 print("        ↓ 재귀            ↓ 재귀")
 print("각각 다시 퀵 정렬")
 
@@ -32,9 +32,10 @@ def partition(arr, low, high):
         
         # 현재 원소가 피벗보다 작거나 같으면
         if arr[j] <= pivot:
+            original_value = arr[j]
             i += 1
             arr[i], arr[j] = arr[j], arr[i]
-            print(f"{arr[j]}는 작음 → 교환 {arr}")
+            print(f"{original_value}는 작음 → 교환 {arr}")
         else:
             print(f"{arr[j]}는 큼 → 그대로")
     
@@ -82,7 +83,7 @@ def quick_sort_simple(arr):
 
 # 테스트해보기
 print("\n=== ⚡ 퀵 정렬 테스트 ===")
-test_data = [3, 6, 8, 10, 1, 2, 1]
+test_data = [3, 6, 8, 10, 1, 2, 2]
 print(f"정렬 전: {test_data}")
 quick_sort(test_data.copy())
 print(f"\n🎉 최종 결과: {quick_sort_simple(test_data)}")
