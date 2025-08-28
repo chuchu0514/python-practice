@@ -63,19 +63,33 @@ def find_student_by_name(students, name):
     """이름으로 학생 정보 찾기"""
     # TODO: 이름이 일치하는 학생의 인덱스를 반환하세요
     # 힌트: students[i]["name"] == name 조건 사용
-    pass
+    for i in range(len(students)):
+        if students[i]["name"] == name:
+            return i
+    return -1
 
 def find_top_student(students):
     """최고 점수 학생 찾기"""  
     # TODO: 가장 높은 점수를 가진 학생의 인덱스를 반환하세요
     # 힌트: 최고 점수를 기록해두면서 비교
-    pass
+    best_score = 0
+    best_idx = None
+    for i in range(len(students)):
+        if students[i]["score"] > best_score:
+            best_score = students[i]["score"]
+            best_idx = i
+    return best_idx
 
 def find_students_by_grade(students, target_grade):
     """특정 등급의 학생들 찾기"""
     # TODO: 해당 등급인 모든 학생의 인덱스를 리스트로 반환하세요
     # 힌트: 결과 리스트를 만들고 조건 만족시 append
-    pass
+    result = []
+    for i in range(len(students)):
+        if students[i]["grade"] == target_grade:
+            result.append(i)
+    return result
+
 
 # 테스트
 print("\n--- 테스트 ---")
@@ -111,23 +125,44 @@ def find_contact_by_name(contacts, name):
     """이름으로 연락처 찾기"""
     # TODO: 이름으로 연락처 전체 정보 반환 (튜플 반환)
     # 힌트: 찾으면 contacts[i] 반환, 없으면 None 반환
-    pass
+    for i in range(len(contacts)):
+        if contacts[i][0] == name:
+            return contacts[i] 
+    return None
 
 def find_contact_by_phone(contacts, phone):
     """전화번호로 연락처 찾기"""
     # TODO: 전화번호로 연락처 찾기
-    pass
+    for i in range(len(contacts)):
+        if contacts[i][1] == phone:
+            return contacts[i] 
+    return None
 
 def find_contacts_by_category(contacts, category):
     """카테고리로 연락처들 찾기"""
     # TODO: 같은 카테고리인 모든 연락처 반환
-    pass
+    result = []
+    for i in range(len(contacts)):
+        if contacts[i][2] == category:
+            result.append(contacts[i])
+    if len(result) > 0:
+        return result
+    else:
+        return None
 
 def search_name_partial(contacts, partial_name):
     """이름 부분 검색"""
     # TODO: 이름에 partial_name이 포함된 연락처들 찾기
     # 힌트: if partial_name in contact[0]: 사용
-    pass
+    result = []
+    for i in range(len(contacts)):
+        if partial_name in contacts[i][0]:
+            result.append(contacts[i])
+    if len(result) > 0:
+        return result
+    else:
+        return None
+
 
 # 테스트
 print("\n--- 테스트 ---")
@@ -159,17 +194,27 @@ print(f"숫자 리스트: {numbers}")
 def find_first_even(numbers):
     """첫 번째 짝수 찾기"""
     # TODO: 첫 번째 짝수의 인덱스 반환
-    pass
+    for i in range(len(numbers)):
+        if numbers[i] % 2 == 0:
+            return i
+    return -1
 
 def find_first_greater_than(numbers, threshold):
     """임계값보다 큰 첫 번째 수 찾기"""
     # TODO: threshold보다 큰 첫 번째 수의 인덱스 반환
-    pass
+    for i in range(len(numbers)):
+        if numbers[i] > threshold:
+            return i
+    return -1
+    
 
 def find_first_divisible_by(numbers, divisor):
     """특정 수로 나누어떨어지는 첫 번째 수 찾기"""
     # TODO: divisor로 나누어떨어지는 첫 번째 수의 인덱스 반환
-    pass
+    for i in range(len(numbers)):
+        if numbers[i] % divisor == 0:
+            return i
+    return -1
 
 # 테스트  
 print("\n--- 테스트 ---")
@@ -203,18 +248,32 @@ class GameInventory:
     def find_item_by_name(self, item_name):
         """아이템 이름으로 찾기"""
         # TODO: 아이템 이름으로 인덱스 찾기
-        pass
+        for i in range(len(self.items)):
+            if self.items[i][0] == item_name:
+                return i
+        return -1
     
     def find_items_by_type(self, item_type):
         """타입별 아이템들 찾기"""
         # TODO: 같은 타입인 모든 아이템의 인덱스들 반환
-        pass
+        result = []
+        for i in range(len(self.items)):
+            if self.items[i][2] == item_type:
+                result.append(i)
+        return result
+        
     
     def has_enough_items(self, item_name, required_count):
         """충분한 수량이 있는지 확인"""
         # TODO: 해당 아이템이 required_count 이상 있는지 확인
         # 반환: True/False
-        pass
+        for i in range(len(self.items)):
+            if self.items[i][0] == item_name:
+                if self.items[i][1] >= required_count:
+                    return True
+                else:
+                    return False
+        return None
     
     def show_inventory(self):
         """인벤토리 보기"""
