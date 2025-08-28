@@ -189,7 +189,7 @@ def linear_search(arr, target):
 
 def performance_comparison():
     """성능 비교 테스트"""
-    sizes = [1000, 10000, 100000]
+    sizes = [1000, 10000, 1000000]
     
     for size in sizes:
         # 정렬된 테스트 데이터 생성
@@ -212,10 +212,12 @@ def performance_comparison():
         print(f"선형탐색: {linear_time*1000:.3f}ms")
         print(f"이진탐색: {binary_time*1000:.3f}ms")
         
-        if binary_time > 0:
+        if binary_time > 0.000001:  # 더 작은 값으로
             speedup = linear_time / binary_time
             print(f"🚀 이진탐색이 {speedup:.1f}배 빠름!")
-
+        else:
+            print(f"🚀 이진탐색이 너무 빨라서 측정 불가!")
+            
 performance_comparison()
 
 print("\n" + "="*50)
