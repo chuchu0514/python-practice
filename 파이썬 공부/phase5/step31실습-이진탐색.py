@@ -153,18 +153,41 @@ def find_book_by_id(books, book_id):
     """도서번호로 책 찾기"""
     # TODO: 도서번호(books[i][0])로 이진탐색
     # 찾으면 책 전체 정보 반환, 없으면 None
-    pass
+    left = 0
+    right = len(books) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if books[mid][0] == book_id:
+            return books[mid]
+        elif books[mid][0] > book_id:
+            right = mid -1
+        else:
+            left = mid + 1
+    return None
 
 def find_books_in_id_range(books, start_id, end_id):
     """도서번호 범위에 있는 책들 찾기"""
     # TODO: start_id 이상 end_id 이하인 모든 책 반환
-    pass
+    result = []
+    for i in range(len(books)):
+        if start_id <= books[i][0] <= end_id:
+            result.append(books[i])
+    return result
 
 def count_books_by_category(books, category):
     """특정 카테고리 책 개수 세기 (도전!)"""
     # TODO: 이진탐색으로 빠르게 카테고리별 개수 구하기
     # 힌트: 전체를 순회하지 말고 이진탐색 활용
-    pass
+    #!! 클라우드 피셜 출제오류 선형탐색으로 하고 넘어가기 
+    count = 0
+    for book in books:
+        if book[2] == category:  # 카테고리 비교
+            count += 1
+    return count
+
+
+
+
 
 # 테스트
 print("\n--- 테스트 ---")
