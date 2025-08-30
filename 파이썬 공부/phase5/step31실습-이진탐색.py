@@ -33,10 +33,8 @@ def binary_search(arr, target):
             print(f"해당 인덱스는 {mid}입니다")
             return mid
         elif arr[mid] > target:
-            print(f"중간값'{arr[mid]}'이 목표'{target}'보다 큽니다.")
             right = mid - 1
         elif arr[mid] < target:
-            print(f"중간값'{arr[mid]}'이 목표'{target}'보다 작습니다.")
             left = mid + 1
 
     print("해당 인덱스가 존재하지 않습니다.")
@@ -231,12 +229,28 @@ def find_level_by_exp(level_data, current_exp):
     """현재 경험치로 레벨 찾기"""
     # TODO: 현재 경험치에 해당하는 최고 레벨 찾기
     # 힌트: current_exp보다 작거나 같은 가장 큰 경험치 찾기
-    pass
+    high_level = 0
+    left = 0
+    right = len(level_data) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if level_data[mid][1] <= current_exp:
+            high_level = level_data[mid][0]
+            left = mid + 1
+        else:
+            right = mid - 1
+    return high_level
+
 
 def exp_needed_for_next_level(level_data, current_exp):
     """다음 레벨까지 필요한 경험치"""
     # TODO: 다음 레벨까지 얼마나 더 필요한지 계산
-    pass
+    high_level = find_level_by_exp(level_data, current_exp)
+    if current_exp >= level_data[len(level_data) - 1][1]:
+        return 0
+    else:
+        need_exp = level_data[high_level][1] - current_exp
+    return need_exp
 
 # 테스트
 print("\n--- 테스트 ---")
@@ -245,7 +259,10 @@ test_exps = [150, 500, 1200, 3000]
 for exp in test_exps:
     level_info = find_level_by_exp(level_exp, exp)
     needed = exp_needed_for_next_level(level_exp, exp)
-    print(f"경험치 {exp}: 현재 레벨 {level_info}, 다음 레벨까지 {needed} 필요")
+    if needed == 0 and level_info == 10:  # 최고레벨 처리
+        print(f"경험치 {exp}: 현재 레벨 {level_info}, 최고레벨입니다.")
+    else:
+        print(f"경험치 {exp}: 현재 레벨 {level_info}, 다음 레벨까지 {needed} 필요")
 
 print("\n" + "="*50)
 
@@ -272,13 +289,17 @@ class SearchPerformanceTester:
         """정렬된 테스트 데이터 생성"""
         # TODO: 정렬된 데이터 생성
         # 힌트: list(range(0, size * 2, 2)) 같은 방식
-        pass
+        self.list = list(range(0, size * 2, 2))
+        return self.list
     
     def measure_search_time(self, search_func, data, target, iterations=1000):
         """탐색 함수의 실행 시간 측정"""
         # TODO: 여러 번 실행해서 평균 시간 계산
         # 힌트: time.time() 사용
-        pass
+        self.start_time = time.time()
+        search_func(data, target)
+        self.end_time = time.time()
+        return (self.end_time - self.start_time) * 1000
     
     def compare_searches(self):
         """선형탐색과 이진탐색 비교"""
@@ -303,7 +324,7 @@ class SearchPerformanceTester:
 
 # 테스트
 tester = SearchPerformanceTester()
-# tester.compare_searches()  # 구현 완료 후 주석 해제
+tester.compare_searches()  # 구현 완료 후 주석 해제
 
 print("\n" + "="*50)
 
@@ -328,23 +349,87 @@ for name, price, category in products:
 
 def find_product_by_price(products, target_price):
     """정확한 가격으로 상품 찾기"""
+    left = 0
+    right = len(products) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if products[mid][1] == target_price:
+            return products[mid]
+        elif products[mid][1] < target_price:
+            left = mid + 1
+        else:
+            right = mid - 1
+    print("해당 가격의 상품이 없습니다.")
+    return None
     # TODO: 가격으로 이진탐색
-    pass
+
 
 def find_products_under_budget(products, max_budget):
     """예산 이하의 모든 상품 찾기"""
     # TODO: max_budget 이하인 모든 상품 반환
-    pass
+    result = []
+    left = 0
+    right = len(products) - 1
+    max_idx = -1
+    while left <= right:
+        mid = (left + right) // 2
+        if products[mid][1] <= max_budget:
+            max_idx = mid
+            left = mid + 1
+        else:
+            right = mid - 1
+    for i in range(max_idx + 1):
+        result.append(products[i])
+
+    return result
 
 def find_cheapest_in_category(products, category):
     """특정 카테고리에서 가장 저렴한 상품"""
     # TODO: 해당 카테고리에서 가장 저렴한 상품 찾기
-    pass
+    result = []
+    for i in range(len(products)):
+        if products[i][2] == category:
+            result.append(products[i])
+    
+    return result[0]
+
+def find_first(products, target_score):
+    """target_score 이상의 첫 번째 인덱스"""
+    left, right = 0, len(products) - 1
+    result = -1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        if products[mid][1] >= target_score:
+            result = mid
+            right = mid - 1  # 더 작은 인덱스 찾기
+        else:
+            left = mid + 1
+    return result
 
 def find_price_range_products(products, min_price, max_price):
     """가격 범위 내 상품들 찾기"""
     # TODO: min_price 이상 max_price 이하 상품들 반환
-    pass
+    min_idx = find_first(products, min_price)
+    max_idx = find_first(products, max_price + 1)  
+    result = []
+    if min_idx == -1 or min_idx > max_idx: 
+        return result
+    
+    if max_idx == -1:  
+         max_idx = len(products)
+
+    max_idx = max_idx - 1  # max_score 이하의 마지막
+        
+    for i in range(min_idx, max_idx + 1):
+        result.append(products[i])
+    return result
+
+
+    
+
+
+
 
 # 테스트
 print("\n--- 테스트 ---")
