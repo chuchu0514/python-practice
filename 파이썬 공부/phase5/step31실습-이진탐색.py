@@ -167,10 +167,32 @@ def find_books_in_id_range(books, start_id, end_id):
     """도서번호 범위에 있는 책들 찾기"""
     # TODO: start_id 이상 end_id 이하인 모든 책 반환
     result = []
-    for i in range(len(books)):
-        if start_id <= books[i][0] <= end_id:
+    left = 0
+    right = len(books) - 1
+    st_idx = -1
+    ed_idx = -1
+    while left <= right:
+        mid = (left + right) // 2
+        if books[mid][0] >= start_id:
+            st_idx = mid
+            right = mid -1
+        else:
+            left = mid + 1
+    left = 0
+    right = len(books) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if books[mid][0] <= end_id:
+            ed_idx = mid
+            left = mid + 1
+        else:
+            right = mid -1
+    if st_idx != -1 and ed_idx != -1 and st_idx <= ed_idx:
+        for i in range(st_idx, ed_idx + 1):
             result.append(books[i])
+
     return result
+
 
 def count_books_by_category(books, category):
     """특정 카테고리 책 개수 세기 (도전!)"""
@@ -296,11 +318,14 @@ class SearchPerformanceTester:
         """탐색 함수의 실행 시간 측정"""
         # TODO: 여러 번 실행해서 평균 시간 계산
         # 힌트: time.time() 사용
-        self.start_time = time.time()
-        search_func(data, target)
-        self.end_time = time.time()
-        return (self.end_time - self.start_time) * 1000
-    
+        start_time = time.time()
+        for _ in range(iterations):  # 1000번 반복
+            search_func(data, target)
+        end_time = time.time()
+        total_time = (end_time - start_time) * 1000  # 전체 시간 (ms)
+        average_time = total_time / iterations       # 평균 시간
+        return average_time
+        
     def compare_searches(self):
         """선형탐색과 이진탐색 비교"""
         print("\n📊 성능 비교 결과:")
@@ -413,13 +438,16 @@ def find_price_range_products(products, min_price, max_price):
     min_idx = find_first(products, min_price)
     max_idx = find_first(products, max_price + 1)  
     result = []
+
+    if max_idx == -1:  
+        max_idx = len(products)     
+    max_idx = max_idx - 1  # max_score 이하의 마지막
+
     if min_idx == -1 or min_idx > max_idx: 
         return result
     
-    if max_idx == -1:  
-         max_idx = len(products)
 
-    max_idx = max_idx - 1  # max_score 이하의 마지막
+
         
     for i in range(min_idx, max_idx + 1):
         result.append(products[i])
