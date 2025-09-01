@@ -1,6 +1,5 @@
 import time
 import random
-
 def linear_search(arr, target, key=None):
     for i in range(len(arr)):
         compare_value = key(arr[i]) if key else arr[i]
@@ -25,51 +24,42 @@ def binary_search(arr, target, key=None):
 # ===== Level 1: 기본 성능 비교기 =====
 
 def generate_test_data(size):
-    """
-    테스트용 정렬된 데이터 생성
     
-    목표: size 크기의 정렬된 리스트 만들기
-    힌트: range() 사용하거나 random.sample() + sort() 사용
-    """
-    # TODO: size 크기의 정렬된 리스트 생성
-    # TODO: 예) [1, 2, 3, 4, 5, ...] 또는 무작위 수들을 정렬
-    
+    # 테스트용 정렬된 데이터 생성
+
+    data = list(range(0, size * 2 , 2))
+    return data
 
 def measure_search_time(search_function, data, target):
-    """
-    탐색 함수의 실행시간 측정
     
-    목표: 특정 탐색 함수가 target을 찾는데 걸리는 시간 측정
-    힌트: time.time()으로 시작/끝 시간 기록
-    """
-    # TODO: 시작 시간 기록
-    # TODO: search_function 실행
-    # TODO: 끝 시간 기록  
-    # TODO: 실행시간 계산해서 반환
+    # 탐색 함수의 실행시간 측정
+
+    start_time = time.perf_counter()
+    search_function(data, target)
+    end_time = time.perf_counter()
+    return end_time - start_time
+    
    
 
 def run_performance_test(data_size):
     
-    """
-    특정 크기 데이터로 성능 테스트 실행
-    
-    목표: 선형탐색 vs 이진탐색 성능 비교
-    힌트: 같은 데이터, 같은 target으로 두 알고리즘 테스트
-    """
+    # 특정 크기 데이터로 성능 테스트 실행
+
     print(f"\n=== 데이터 크기: {data_size}개 ===")
     
-    # TODO: 테스트 데이터 생성
-    # TODO: 찾을 target 정하기 (데이터 중간쯤 값 추천)
-    
+    data = generate_test_data(data_size)
+    target = random.choice(data)
+
     print(f"찾을 값: {target}")
-    
-    # TODO: 선형탐색 시간 측정
-    # TODO: 이진탐색 시간 측정
-    
-    # TODO: 결과 출력
-    print(f"선형탐색: {linear_time:.6f}초")
-    print(f"이진탐색: {binary_time:.6f}초") 
-    print(f"속도 차이: {linear_time/binary_time:.1f}배")
+    linear_time = measure_search_time(linear_search, data, target)
+    binary_time = measure_search_time(binary_search, data, target)
+
+    print(f"선형탐색: {linear_time:.8f}초")
+    print(f"이진탐색: {binary_time:.8f}초") 
+    if binary_time > 0:
+        print(f"속도 차이: {linear_time/binary_time:.1f}배")
+    else:
+        print("이진탐색이 너무 빨라서 측정 불가!")
 
 def show_comparison_table():
    
@@ -81,10 +71,9 @@ def show_comparison_table():
     print("🔍 탐색 알고리즘 성능 비교 시뮬레이터")
     print("=" * 50)
     
-    data_sizes = [100, 1000, 10000]  # 테스트할 데이터 크기들
-    
-    # TODO: 각 크기별로 성능 테스트 실행
-    # TODO: for문으로 data_sizes 순회하면서 run_performance_test() 호출
+    data_sizes = [1000000, 10000000]  
+    for size in data_sizes:
+        run_performance_test(size)
     
     print("\n📊 결론:")
     print("- 데이터 크기가 클수록 이진탐색이 압도적으로 빠름!")
@@ -92,8 +81,8 @@ def show_comparison_table():
 
 def main():
     """메인 실행 함수"""
-    # TODO: show_comparison_table() 호출해서 전체 시뮬레이션 실행
-    pass
+    show_comparison_table()
+    return
 
 if __name__ == "__main__":
     main()
