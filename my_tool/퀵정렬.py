@@ -58,3 +58,12 @@ def quick_sort_simple(arr):
     right = [x for x in arr if x > pivot]
     
     return quick_sort_simple(left) + middle + quick_sort_simple(right)
+
+# 테스트해보기
+print("\n=== ⚡ 퀵 정렬 테스트 ===")
+test_data = [3, 6, 8, 10, 1, 2, 2]
+print(f"정렬 전: {test_data}")
+result = quick_sort(test_data.copy())
+print(f"결과: {result}")
+
+print("\n" + "="*60)

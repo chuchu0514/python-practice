@@ -81,3 +81,14 @@ def merge_sort_simple(arr):
     result.extend(right[j:])
     
     return result
+
+# 테스트해보기
+print("\n=== ⚡ 병합 정렬 테스트 ===")
+test_data = [38, 27, 43, 3, 9, 82, 10]
+print(f"정렬 전: {test_data}")
+result = merge_sort(test_data)
+
+result = merge_sort_simple(test_data)
+print(f"\n🎉 최종 결과: {result}")
+
+print("\n" + "="*60)
