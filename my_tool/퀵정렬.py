@@ -46,6 +46,7 @@ def quick_sort(arr, low=0, high=None):
         # 피벗 오른쪽 부분 정렬
         print(f"\n오른쪽 부분 정렬: {arr[pivot_index+1:high+1]}")
         quick_sort(arr, pivot_index + 1, high)
+    
 
 # 간단한 퀵 정렬 (출력 없는 버전)
 def quick_sort_simple(arr):
@@ -63,7 +64,7 @@ def quick_sort_simple(arr):
 print("\n=== ⚡ 퀵 정렬 테스트 ===")
 test_data = [3, 6, 8, 10, 1, 2, 2]
 print(f"정렬 전: {test_data}")
-result = quick_sort(test_data.copy())
-print(f"결과: {result}")
+result = quick_sort(test_data)
+print(f"결과: {test_data}")
 
 print("\n" + "="*60)
