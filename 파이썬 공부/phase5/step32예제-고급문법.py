@@ -152,6 +152,20 @@ def print_person(**kwargs):
 print("키워드 인수로 호출:")
 print_person(name="Alice", age=25, city="Seoul", job="개발자")
 
+# def print_person(**kwargs):
+#     for key, value in kwargs.items():
+#         print(f"{key}: {value}")
+
+# print_person(**{"name": "Alice", "age": 25, "city": "Seoul"})  # ✅ 가능
+
+# def print_person(kwargs):
+#     for key, value in kwargs.items():
+#         print(f"{key}: {value}")
+
+# data = {"name": "Alice", "age": 25, "city": "Seoul"}
+# print_person(data)  # ✅ 가능
+
+
 # 딕셔너리 언팩킹
 person_info = {"name": "Bob", "age": 30, "hobby": "음악"}
 print("\n딕셔너리 언팩킹:")
@@ -167,6 +181,7 @@ def flexible_function(*args, **kwargs):
 
 result = flexible_function(1, 2, 3, name="Alice", age=25)
 print(f"  총 인수 개수: {result}")
+# *는 튜플 **는 딕셔너리 
 
 # 함수 래퍼 만들기
 def timer_decorator(func):
