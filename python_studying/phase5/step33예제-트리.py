@@ -148,7 +148,7 @@ class BinaryTreeNode:
         print(f"   '{self.data}'의 오른쪽에 '{node.data}' 연결")
     
     def show_binary_tree(self, level=0, prefix="Root: "):
-        """이진 트리 구조 출력"""
+        """이진 트리 구조 출력""" 
         if self is not None:
             print("  " * level + prefix + str(self.data))
             if self.left is not None or self.right is not None:
