@@ -194,11 +194,10 @@ class BinaryTreeWithTraversal(BinaryTreeNode):
     def __init__(self, data):
         super().__init__(data)
     
-    def preorder_traversal(self, visit_list=[]):
+    def preorder_traversal(self, visit_list=None):
         """전위 순회: Root → Left → Right"""
-        if not hasattr(self, '_visit_list'):
+        if visit_list is None:  # 처음 호출이면 새 리스트 만들기
             visit_list = []
-            self._visit_list = visit_list
         
         visit_list.append(self.data)  # 1. 루트 방문
         print(f"방문: {self.data}")
@@ -210,11 +209,10 @@ class BinaryTreeWithTraversal(BinaryTreeNode):
         
         return visit_list
     
-    def inorder_traversal(self, visit_list=[]):
+    def inorder_traversal(self, visit_list=None):
         """중위 순회: Left → Root → Right"""
-        if not hasattr(self, '_visit_list_in'):
+        if visit_list is None:  # 처음 호출이면 새 리스트 만들기
             visit_list = []
-            self._visit_list_in = visit_list
         
         if self.left:                 # 1. 왼쪽 서브트리
             self.left.inorder_traversal(visit_list)
@@ -225,11 +223,10 @@ class BinaryTreeWithTraversal(BinaryTreeNode):
         
         return visit_list
     
-    def postorder_traversal(self, visit_list=[]):
+    def postorder_traversal(self, visit_list=None):
         """후위 순회: Left → Right → Root"""
-        if not hasattr(self, '_visit_list_post'):
+        if visit_list is None:  # 처음 호출이면 새 리스트 만들기
             visit_list = []
-            self._visit_list_post = visit_list
         
         if self.left:                 # 1. 왼쪽 서브트리
             self.left.postorder_traversal(visit_list)
@@ -239,6 +236,7 @@ class BinaryTreeWithTraversal(BinaryTreeNode):
         print(f"방문: {self.data}")
         
         return visit_list
+
 
 # 순회 테스트용 트리
 print("\n=== 트리 순회 테스트 ===")

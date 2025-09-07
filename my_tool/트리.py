@@ -71,3 +71,52 @@ class BinaryTreeNode:
                     self.right.show_binary_tree(level + 1, "R--- ")
                 else:
                     print("  " * (level + 1) + "R--- None")
+
+#트리순회
+class BinaryTreeWithTraversal(BinaryTreeNode):
+    def __init__(self, data):
+        super().__init__(data)
+    
+    def preorder_traversal(self, visit_list=None):
+        """전위 순회: Root → Left → Right"""
+        if visit_list is None:  # 처음 호출이면 새 리스트 만들기
+            visit_list = []
+        
+        visit_list.append(self.data)  # 1. 루트 방문
+        print(f"방문: {self.data}")
+        
+        if self.left:                 # 2. 왼쪽 서브트리
+            self.left.preorder_traversal(visit_list)
+        if self.right:                # 3. 오른쪽 서브트리  
+            self.right.preorder_traversal(visit_list)
+        
+        return visit_list
+    
+    def inorder_traversal(self, visit_list=None):
+        """중위 순회: Left → Root → Right"""
+        if visit_list is None:  # 처음 호출이면 새 리스트 만들기
+            visit_list = []
+        
+        if self.left:                 # 1. 왼쪽 서브트리
+            self.left.inorder_traversal(visit_list)
+        visit_list.append(self.data)  # 2. 루트 방문
+        print(f"방문: {self.data}")
+        if self.right:                # 3. 오른쪽 서브트리
+            self.right.inorder_traversal(visit_list)
+        
+        return visit_list
+    
+    def postorder_traversal(self, visit_list=None):
+        """후위 순회: Left → Right → Root"""
+        if visit_list is None:  # 처음 호출이면 새 리스트 만들기
+            visit_list = []
+        
+        if self.left:                 # 1. 왼쪽 서브트리
+            self.left.postorder_traversal(visit_list)
+        if self.right:                # 2. 오른쪽 서브트리
+            self.right.postorder_traversal(visit_list)
+        visit_list.append(self.data)  # 3. 루트 방문
+        print(f"방문: {self.data}")
+        
+        return visit_list
+
