@@ -253,7 +253,13 @@ def get_path_to_node(root, target, path=None):
     # 힌트: 백트래킹 알고리즘 사용
     # 매우 어려운 문제! 도전 과제
     pass
-
+# root가 None이면?
+# root.data가 target과 같으면?
+# 1. 현재 노드를 path에 추가
+# 2. 왼쪽 자식에서 재귀 탐색
+# 3. 찾았으면 True 반환
+# 4. 못 찾았으면 오른쪽 자식에서 재귀 탐색  
+# 5. 양쪽 다 실패하면 path에서 현재 노드 제거하고 False 반환
 # 테스트
 found = find_node(tree.root, 4)
 if found:
