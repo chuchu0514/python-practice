@@ -34,19 +34,60 @@ class BinaryTree:
         """트리의 총 노드 개수 구하기"""
         # TODO: 재귀를 사용해서 전체 노드 개수 계산
         # 힌트: 루트가 None이면 0, 아니면 1 + 왼쪽 서브트리 노드 수 + 오른쪽 서브트리 노드 수
-        pass
-    
+        return self._count_helper(self.root)
+    def _count_helper(self, node):
+        """실제 카운팅 담당 (노드를 받아서 처리)"""
+        # 여기서 node는 BinaryTreeNode 객체
+        # TODO: 이 부분을 네가 구현해봐!
+        # 힌트: node가 None이면? 아니면?
+        if node is None:
+            return 0
+        
+        count = 1
+        left_count = self._count_helper(node.left)
+        right_count = self._count_helper(node.right)
+
+        return count + left_count + right_count
+
     def get_height(self):
         """트리의 높이 구하기"""  
         # TODO: 재귀를 사용해서 트리 높이 계산
         # 힌트: 루트가 None이면 -1, 아니면 max(왼쪽 높이, 오른쪽 높이) + 1
-        pass
+        return self._height_helper(self.root)
     
+    def _height_helper(self, node):
+        if node is None:
+            return -1  # 빈 트리
+        
+        # 왼쪽 서브트리 높이 구하기
+        left_height = self._height_helper(node.left)
+        
+        # 오른쪽 서브트리 높이 구하기  
+        right_height = self._height_helper(node.right)
+        
+        # 더 높은 쪽을 선택하고 +1
+        return max(left_height, right_height) + 1
+
     def count_leaves(self):
         """잎 노드(leaf) 개수 구하기"""
         # TODO: 자식이 없는 노드들의 개수 계산
         # 힌트: 왼쪽과 오른쪽 자식이 모두 None인 노드가 잎 노드
-        pass
+        return self._count_leaves_helper(self.root)
+    
+    def _count_leaves_helper(self, node):
+        if node is None:
+            return 0  # 빈 노드는 잎 0개
+        
+        # 현재 노드가 잎 노드인가?
+        if node.left is None and node.right is None:
+            return 1  # 잎 노드 1개!
+        
+        # 아니면 왼쪽 + 오른쪽 잎 개수
+        left_count = self._count_leaves_helper(node.left)
+        right_count = self._count_leaves_helper(node.right)
+        return left_count + right_count
+        
+
 
 # 테스트용 트리 만들기
 tree = BinaryTree()
@@ -63,10 +104,10 @@ print("  2   3")
 print(" / \\")
 print("4   5")
 
-# 여기서 테스트 해보세요!
-# print(f"노드 개수: {tree.count_nodes()}")  # 예상 결과: 5
-# print(f"트리 높이: {tree.get_height()}")   # 예상 결과: 2  
-# print(f"잎 노드 개수: {tree.count_leaves()}") # 예상 결과: 3 (4, 5, 3)
+
+print(f"노드 개수: {tree.count_nodes()}")  # 예상 결과: 5
+print(f"트리 높이: {tree.get_height()}")   # 예상 결과: 2  
+print(f"잎 노드 개수: {tree.count_leaves()}") # 예상 결과: 3 (4, 5, 3)
 
 print("\n" + "="*60)
 
@@ -79,24 +120,65 @@ class TreeTraversal:
     def __init__(self, root):
         self.root = root
     
-    def preorder(self, node, result=[]):
+    def preorder(self, node, result=None):
         """전위 순회: Root → Left → Right"""
         # TODO: 전위 순회 구현
         # 힌트: 1. 현재 노드 방문 2. 왼쪽 재귀 3. 오른쪽 재귀
         # 주의: result 리스트 초기화 문제 해결하기
-        pass
+        if result is None:
+            result = []
+        if node is None:
+            return result
+
+        result.append(node.data)
+
+        if node.left:
+            self.preorder(node.left, result)
+
+        if node.right:
+            self.preorder(node.right, result)
+
+        return result
     
-    def inorder(self, node, result=[]):
+    def inorder(self, node, result=None):
         """중위 순회: Left → Root → Right"""
         # TODO: 중위 순회 구현  
         # 힌트: 1. 왼쪽 재귀 2. 현재 노드 방문 3. 오른쪽 재귀
-        pass
+        if result is None:
+            result = []
+        if node is None:
+            return result
+
+
+        if node.left:
+            self.inorder(node.left, result)
+
+        result.append(node.data)
+
+        if node.right:
+            self.inorder(node.right, result)
+
+        return result
     
-    def postorder(self, node, result=[]):
+    def postorder(self, node, result=None):
         """후위 순회: Left → Right → Root"""
         # TODO: 후위 순회 구현
         # 힌트: 1. 왼쪽 재귀 2. 오른쪽 재귀 3. 현재 노드 방문
-        pass
+        if result is None:
+            result = []
+        if node is None:
+            return result
+
+        
+        if node.left:
+            self.postorder(node.left, result)
+
+        if node.right:
+            self.postorder(node.right, result)
+        
+        result.append(node.data)
+
+        return result
     
     def get_all_traversals(self):
         """모든 순회 결과를 딕셔너리로 반환"""
@@ -108,9 +190,9 @@ class TreeTraversal:
 
 # 테스트
 traversal = TreeTraversal(tree.root)
-# results = traversal.get_all_traversals()
-# for name, result in results.items():
-#     print(f"{name} 순회: {result}")
+results = traversal.get_all_traversals()
+for name, result in results.items():
+    print(f"{name} 순회: {result}")
 
 # 예상 결과:
 # 전위: [1, 2, 4, 5, 3]
