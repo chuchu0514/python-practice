@@ -210,17 +210,44 @@ def find_node(root, target):
     """트리에서 target 값을 가진 노드 찾기"""
     # TODO: 트리를 순회하면서 target과 같은 데이터를 가진 노드 찾기
     # 힌트: 전위/중위/후위 중 아무거나 사용 가능
-    # 반환값: 찾으면 노드 객체, 못 찾으면 None
-    pass
+    # 반환값: 찾으면 노드 객체, 못 찾으면 None  
+    if root is None:
+        return None
+    if root.data == target:
+        return root
+    left = find_node(root.left, target)
+    if left:
+        return left
+    
+    right = find_node(root.right, target)
+    return right
+
 
 def find_parent(root, target):
     """특정 값의 부모 노드 찾기"""
     # TODO: target의 부모 노드를 찾아서 반환
     # 힌트: 현재 노드의 자식이 target인지 확인
     # 어려운 문제! 차근차근 생각해보기
-    pass
+    if root is None:
+        return None
 
-def get_path_to_node(root, target, path=[]):
+    if root.left and root.left.data == target:
+        return root  # 내가 부모!
+    if root.right and root.right.data == target:
+        return root  # 내가 부모!
+    
+    left_result = find_parent(root.left, target)
+    if left_result:
+        return left_result
+    
+    # 오른쪽에서 찾기
+    right_result = find_parent(root.right, target)
+    return right_result
+
+
+
+
+def get_path_to_node(root, target, path=None):
     """루트에서 특정 노드까지의 경로 찾기"""
     # TODO: 루트부터 target까지의 경로를 리스트로 반환
     # 힌트: 백트래킹 알고리즘 사용
@@ -228,13 +255,13 @@ def get_path_to_node(root, target, path=[]):
     pass
 
 # 테스트
-# found = find_node(tree.root, 4)
-# if found:
-#     print(f"노드 4를 찾았습니다: {found.data}")
-# 
-# parent = find_parent(tree.root, 4)  
-# if parent:
-#     print(f"노드 4의 부모: {parent.data}")
+found = find_node(tree.root, 4)
+if found:
+    print(f"노드 4를 찾았습니다: {found.data}")
+
+parent = find_parent(tree.root, 4)  
+if parent:
+    print(f"노드 4의 부모: {parent.data}")
 
 print("\n" + "="*60)
 
