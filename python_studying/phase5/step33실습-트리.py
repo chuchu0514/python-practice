@@ -338,18 +338,11 @@ def is_subtree(main_tree, sub_tree):
         result = are_trees_equal(main_tree, sub_tree)
         if result:
             return True
-        else:
-            return False    
-        
-    if main_tree.data != sub_tree.data:
-        left = is_subtree(main_tree.left, sub_tree)
-        right = is_subtree(main_tree.right, sub_tree)
-        if left == True or right == True:
-            return True
 
-    
-
-    
+    left = is_subtree(main_tree.left, sub_tree)
+    right = is_subtree(main_tree.right, sub_tree)
+    if left or right :
+        return True
     
     return False
 
@@ -365,7 +358,36 @@ tree2.root.left.right = BinaryTreeNode(5)
 
 print(f"두 트리가 같나요? {are_trees_equal(tree.root, tree2.root)}")
 
+# 기존 tree 사용 (이미 있는 것)
+print("=== is_subtree 간단 테스트 ===")
+
+# 테스트 1: 빈 트리
+print(f"빈 트리: {is_subtree(tree.root, None)}")  # True
+
+# 테스트 2: 단일 노드들
+single_node = BinaryTreeNode(4)
+print(f"노드 4: {is_subtree(tree.root, single_node)}")  # True
+
+single_node2 = BinaryTreeNode(99)
+print(f"노드 99: {is_subtree(tree.root, single_node2)}")  # False
+
+# 테스트 3: 서브트리 (노드 2와 그 자식들)
+subtree = BinaryTreeNode(2)
+subtree.left = BinaryTreeNode(4)
+subtree.right = BinaryTreeNode(5)
+print(f"서브트리 2(4,5): {is_subtree(tree.root, subtree)}")  # True
+
+# 테스트 4: 잘못된 서브트리
+wrong_subtree = BinaryTreeNode(2)
+wrong_subtree.left = BinaryTreeNode(4)
+wrong_subtree.right = BinaryTreeNode(99)  # 5가 아닌 99
+print(f"잘못된 서브트리: {is_subtree(tree.root, wrong_subtree)}")  # False
+
+# 테스트 5: 전체 트리
+print(f"전체 트리: {is_subtree(tree.root, tree.root)}")  # True
+
 print("\n" + "="*60)
+
 
 # 문제 5: 레벨별 출력 (🥈 실버 3 난이도)  
 print("📝 문제 5: 트리를 레벨별로 출력하기")
@@ -380,20 +402,74 @@ def print_level_order(root):
     # 1. 큐에 루트 삽입
     # 2. 큐가 빌 때까지: 노드 하나 꺼내서 출력하고 자식들을 큐에 삽입
     # 3. 레벨 구분하는 방법 생각해보기
+    if root is None:
+        return
+    queue = deque([root])    
+    level = 0
     
-    from collections import deque  # 파이썬 큐 사용
-    pass
+    while queue:
+        level_size = len(queue)  # 🔑 현재 레벨 노드 개수!
+        
+        print(f"레벨 {level}: ", end="")
+        
+        # 현재 레벨의 모든 노드 처리
+        for i in range(level_size):
+            node = queue.popleft()
+            print(node.data, end=" ")
+            
+            # 다음 레벨 노드들 추가
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        
+        print()  # 줄바꿈
+        level += 1
+    
+from collections import deque  # 파이썬 큐 사용
+    
 
 def get_level_nodes(root, target_level):
     """특정 레벨의 모든 노드 반환"""
     # TODO: 특정 레벨에 있는 모든 노드를 리스트로 반환
     # 힌트: 현재 레벨이 target_level과 같으면 노드 추가, 다르면 재귀
-    pass
+    if root is None:
+        return
+    queue = deque([root])    
+    level = 0
+    
+    while queue:
+        level_size = len(queue)  
+        
+        if level == target_level:
+            result = [] 
+            for i in range(level_size):
+                node = queue.popleft()
+                result.append(node.data)  
+            return result  
+        
+        # 현재 레벨의 모든 노드 처리
+        for i in range(level_size):
+            node = queue.popleft()
 
-# 테스트
-# print("레벨 순서 출력:")
-# print_level_order(tree.root)
-# print(f"레벨 2 노드들: {get_level_nodes(tree.root, 2)}")
+            
+            # 다음 레벨 노드들 추가
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        
+        print()  # 줄바꿈
+        level += 1
+        if level > target_level:
+            break
+    return []
+    
+
+#테스트
+print("레벨 순서 출력:")
+print_level_order(tree.root)
+print(f"레벨 2 노드들: {get_level_nodes(tree.root, 2)}")
 
 print("\n" + "="*60)
 
