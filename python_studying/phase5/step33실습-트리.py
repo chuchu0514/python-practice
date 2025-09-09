@@ -252,7 +252,26 @@ def get_path_to_node(root, target, path=None):
     # TODO: 루트부터 target까지의 경로를 리스트로 반환
     # 힌트: 백트래킹 알고리즘 사용
     # 매우 어려운 문제! 도전 과제
-    pass
+    if path is None:
+        path = []
+    if root is None:
+        return None
+
+    path.append(root.data)
+
+    if root.data == target:
+        return True
+    
+    left = get_path_to_node(root.left, target, path)
+    if left:
+        return True
+    
+    right = get_path_to_node(root.right, target, path)
+    if right:
+        return True
+    
+    path.pop()
+    return None
 # root가 None이면?
 # root.data가 target과 같으면?
 # 1. 현재 노드를 path에 추가
@@ -269,7 +288,12 @@ parent = find_parent(tree.root, 4)
 if parent:
     print(f"노드 4의 부모: {parent.data}")
 
+path = []
+if get_path_to_node(tree.root, 4, path):
+    print(f"정답은:{path}")
 print("\n" + "="*60)
+
+
 
 # 문제 4: 트리 비교하기 (🥈 실버 4 난이도)
 print("📝 문제 4: 두 트리가 같은지 비교하기")
@@ -283,13 +307,53 @@ def are_trees_equal(root1, root2):
     # 1. 둘 다 None이면 같음
     # 2. 하나만 None이면 다름  
     # 3. 둘 다 존재하면 값 비교 + 왼쪽 서브트리 비교 + 오른쪽 서브트리 비교
-    pass
+    if root1 == None and root2 == None:
+        return True
+    if (root1 is None) != (root2 is None):
+        return False
+    
+    if root1.data != root2.data:
+        return False
+    
+    left = are_trees_equal(root1.left, root2.left)
+    if left == False:
+        return False
+    right = are_trees_equal(root1.right, root2.right)
+    if right == False:
+        return False
+    
+    return True
 
 def is_subtree(main_tree, sub_tree):
     """sub_tree가 main_tree의 서브트리인지 확인"""
     # TODO: 더 어려운 도전 문제!
     # 힌트: main_tree의 모든 노드에 대해 sub_tree와 같은지 확인
-    pass
+
+    if sub_tree is None:
+        return True
+    if main_tree is None:
+        return False
+    
+    if main_tree.data == sub_tree.data:
+        result = are_trees_equal(main_tree, sub_tree)
+        if result:
+            return True
+        else:
+            return False    
+        
+    if main_tree.data != sub_tree.data:
+        left = is_subtree(main_tree.left, sub_tree)
+        right = is_subtree(main_tree.right, sub_tree)
+        if left == True or right == True:
+            return True
+
+    
+
+    
+    
+    return False
+
+    
 
 # 테스트용 트리 2 만들기
 tree2 = BinaryTree()
@@ -299,7 +363,7 @@ tree2.root.right = BinaryTreeNode(3)
 tree2.root.left.left = BinaryTreeNode(4)
 tree2.root.left.right = BinaryTreeNode(5)
 
-# print(f"두 트리가 같나요? {are_trees_equal(tree.root, tree2.root)}")
+print(f"두 트리가 같나요? {are_trees_equal(tree.root, tree2.root)}")
 
 print("\n" + "="*60)
 
