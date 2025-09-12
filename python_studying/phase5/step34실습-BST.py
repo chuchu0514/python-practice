@@ -20,11 +20,10 @@ class BSTNode:
         self.left = None
         self.right = None
 
-print("\n" + "="*60)
 
-# 문제 1: BST 기본 연산 완성하기 (🥉 브론즈 3-4 난이도)
+# 문제 1: BST 기본 연산 완성하기 (4점)
 print("📝 문제 1: BST 기본 클래스 완성하기")
-print("난이도: 🥉 브론즈 3-4")
+print("난이도: 4점")
 print("목표: BST의 핵심 연산들을 직접 구현")
 
 class BST:
@@ -33,12 +32,11 @@ class BST:
     
     def insert(self, data):
         """BST에 데이터 삽입"""
-        # TODO: 재귀를 사용해서 적절한 위치에 삽입
-        # 힌트: 루트가 None이면 새 노드로 설정, 아니면 _insert_helper 호출
         if self.root is None:
             self.root = BSTNode(data)
         else:
-            self._insert_helper(self.root, data)
+            return self._insert_helper(self.root, data)
+            
     
     def _insert_helper(self, node, data):
         """삽입을 도와주는 재귀 함수"""
@@ -58,20 +56,22 @@ class BST:
                 node.right = BSTNode(data)
             else:
                 self._insert_helper(node.right, data)
-        # data == node.data인 경우 중복이므로 무시
-    
+
     def search(self, data):
         """BST에서 데이터 검색"""
         # TODO: 재귀 또는 반복문으로 데이터 찾기
         # 힌트: 현재 노드와 비교해서 왼쪽/오른쪽으로 이동
-        return self._search_helper(self.root, data)
-    
+
+        result = self._search_helper(self.root, data)
+        return result
+
     def _search_helper(self, node, data):
         """검색을 도와주는 재귀 함수"""
         # TODO: 재귀로 데이터 찾기
         # 힌트: node가 None이면 False, data 찾으면 True, 작으면 왼쪽, 크면 오른쪽
         if node is None:
             return False
+        
         if node.data == data:
             return True
         elif data < node.data:
@@ -113,9 +113,9 @@ for target in [1, 5, 6, 9, 10]:
 
 print("\n" + "="*60)
 
-# 문제 2: 최솟값/최댓값 찾기 (🥉 브론즈 2-3 난이도)
+# 문제 2: 최솟값/최댓값 찾기 (3점)
 print("📝 문제 2: 최솟값/최댓값 찾기")
-print("난이도: 🥉 브론즈 2-3")
+print("난이도: 3점")
 print("목표: BST의 특성을 이용해서 효율적으로 최솟값/최댓값 찾기")
 
 class BSTAdvanced(BST):
@@ -125,11 +125,11 @@ class BSTAdvanced(BST):
         # 힌트: 왼쪽 자식이 없을 때까지 계속 이동
         if self.root is None:
             return None
-        
         current = self.root
-        while current.left is not None:
+        while current.left:
             current = current.left
         return current.data
+        
     
     def find_max(self):
         """최댓값 찾기 (가장 오른쪽 노드)"""
@@ -137,32 +137,37 @@ class BSTAdvanced(BST):
         # 힌트: 오른쪽 자식이 없을 때까지 계속 이동
         if self.root is None:
             return None
-        
         current = self.root
-        while current.right is not None:
+        while current.right:
             current = current.right
         return current.data
+        
     
     def find_kth_smallest(self, k):
         """k번째로 작은 값 찾기"""
         # TODO: 중위 순회를 이용해서 k번째 원소 찾기
         # 힌트: 중위 순회 결과에서 k-1 인덱스 (0부터 시작)
-        inorder_result = self.inorder_traversal()
-        if 1 <= k <= len(inorder_result):
-            return inorder_result[k-1]
-        return None
+        result = self.inorder_traversal()
+        return result[k-1]
     
     def find_successor(self, data):
         """특정 값의 successor(다음으로 큰 값) 찾기"""
         # TODO: 어려운 문제! 도전 과제
         # 힌트: 중위 순회에서 data 다음에 오는 값
-        inorder_result = self.inorder_traversal()
-        try:
-            index = inorder_result.index(data)
-            if index < len(inorder_result) - 1:
-                return inorder_result[index + 1]
-        except ValueError:
-            pass
+        result = self.inorder_traversal()
+        left = 0
+        right = len(result) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if result[mid] == data:
+                if mid + 1 < len(result):
+                    return result[mid + 1]
+                else:
+                    return None
+            elif result[mid] > data:
+                right = mid - 1
+            else:
+                left = mid + 1
         return None
 
 # 테스트
@@ -173,14 +178,15 @@ for data in [5, 3, 8, 2, 4, 7, 9, 1, 6]:
 
 print(f"최솟값: {bst_adv.find_min()}")  # 1
 print(f"최댓값: {bst_adv.find_max()}")  # 9
+print(f"정렬 : {bst_adv.inorder_traversal()}")
 print(f"3번째로 작은 값: {bst_adv.find_kth_smallest(3)}")  # 3
 print(f"5의 successor: {bst_adv.find_successor(5)}")  # 6
 
 print("\n" + "="*60)
 
-# 문제 3: BST 삭제 연산 (🥈 실버 3-4 난이도)
+# 문제 3: BST 삭제 연산 (8점)
 print("📝 문제 3: BST 삭제 연산 구현하기")
-print("난이도: 🥈 실버 3-4")
+print("난이도: 8점")
 print("목표: BST에서 노드를 삭제하는 복잡한 알고리즘 구현")
 print("케이스 1: 잎 노드 삭제")
 print("케이스 2: 자식이 1개인 노드 삭제")
@@ -196,47 +202,16 @@ class BSTWithDelete(BSTAdvanced):
         # TODO: 3가지 케이스를 모두 처리해야 함!
         
         # 1단계: 삭제할 노드 찾기
-        if node is None:
-            return node  # 삭제할 노드 없음
-        
-        if data < node.data:
-            node.left = self._delete_helper(node.left, data)
-        elif data > node.data:
-            node.right = self._delete_helper(node.right, data)
-        else:
-            # 삭제할 노드 찾음! 3가지 케이스 처리
-            
-            # 케이스 1: 잎 노드 (자식 0개)
-            if node.left is None and node.right is None:
-                return None
-            
-            # 케이스 2: 자식이 1개
-            elif node.left is None:
-                return node.right
-            elif node.right is None:
-                return node.left
-            
-            # 케이스 3: 자식이 2개 (가장 복잡!)
-            else:
-                # TODO: successor(오른쪽 서브트리의 최솟값) 찾기
-                # 힌트: 오른쪽 서브트리에서 가장 왼쪽 노드
-                successor = self._find_min_node(node.right)
-                
-                # successor의 값을 현재 노드에 복사
-                node.data = successor.data
-                
-                # successor 노드 삭제 (케이스 1 또는 2가 됨)
-                node.right = self._delete_helper(node.right, successor.data)
-        
-        return node
+        # 2단계: 3가지 케이스 처리
+        # 케이스 1: 잎 노드 (자식 0개)
+        # 케이스 2: 자식이 1개
+        # 케이스 3: 자식이 2개 (successor 찾아서 교체)
+        pass
     
     def _find_min_node(self, node):
         """서브트리에서 최솟값 노드 찾기"""
         # TODO: 가장 왼쪽 노드 반환
-        current = node
-        while current.left is not None:
-            current = current.left
-        return current
+        pass
 
 # 삭제 테스트
 print("\n=== 문제 3 테스트 ===")
@@ -260,9 +235,9 @@ print(f"5 삭제 후: {bst_del.inorder_traversal()}")
 
 print("\n" + "="*60)
 
-# 문제 4: BST 검증하기 (🥈 실버 2-3 난이도)
+# 문제 4: BST 검증하기 (6점)
 print("📝 문제 4: BST 검증 함수")
-print("난이도: 🥈 실버 2-3")
+print("난이도: 6점")
 print("목표: 주어진 트리가 올바른 BST인지 검증")
 print("함정 주의: 바로 옆 자식만 비교하면 안됨!")
 
@@ -272,18 +247,14 @@ def is_valid_bst(root, min_val=float('-inf'), max_val=float('inf')):
     # 힌트: 각 노드는 min_val < node.data < max_val 범위에 있어야 함
     # 왼쪽 서브트리: max_val을 현재 노드 값으로 제한
     # 오른쪽 서브트리: min_val을 현재 노드 값으로 제한
-    
     if root is None:
         return True
-    
-    if root.data <= min_val or root.data >= max_val:
+    if not (min_val < root.data < max_val):
         return False
     
-    # 왼쪽 서브트리: 모든 값이 root.data보다 작아야 함
-    left_valid = is_valid_bst(root.left, min_val, root.data)
-    
-    # 오른쪽 서브트리: 모든 값이 root.data보다 커야 함
-    right_valid = is_valid_bst(root.right, root.data, max_val)
+    # 🔥 핵심: 범위를 제대로 전달!
+    left_valid = is_valid_bst(root.left, min_val, root.data)      # 왼쪽: max를 현재값으로 제한
+    right_valid = is_valid_bst(root.right, root.data, max_val)   # 오른쪽: min을 현재값으로 제한
     
     return left_valid and right_valid
 
@@ -291,15 +262,17 @@ def is_valid_bst_simple(root):
     """중위 순회를 이용한 간단한 검증"""
     # TODO: 중위 순회 결과가 정렬되어 있는지 확인
     # 힌트: 중위 순회 결과를 sorted()와 비교
-    def inorder(node, result):
-        if node:
-            inorder(node.left, result)
-            result.append(node.data)
-            inorder(node.right, result)
-    
+    if root is None:
+        return True
+    def _inorder_help(node, result):
+        if node is None:
+            return 
+        _inorder_help(node.left, result)
+        result.append(node.data)
+        _inorder_help(node.right, result)
     result = []
-    inorder(root, result)
-    return result == sorted(result) and len(result) == len(set(result))
+    _inorder_help(root, result)
+    return result == sorted(result)
 
 # 테스트용 트리들 생성
 print("\n=== 문제 4 테스트 ===")
@@ -326,9 +299,9 @@ print(f"잘못된 BST 검증 (간단): {is_valid_bst_simple(wrong_bst)}")  # Fal
 
 print("\n" + "="*60)
 
-# 문제 5: 범위 검색 (🥈 실버 1-2 난이도)
+# 문제 5: 범위 검색 (7점)
 print("📝 문제 5: 범위 검색 구현하기")
-print("난이도: 🥈 실버 1-2")
+print("난이도: 7점")
 print("목표: 특정 범위에 속하는 모든 값 찾기")
 
 class BSTRangeSearch(BSTWithDelete):
@@ -342,30 +315,22 @@ class BSTRangeSearch(BSTWithDelete):
     
     def _range_search_helper(self, node, min_val, max_val, result):
         """범위 검색 도우미 함수"""
-        if node is None:
-            return
-        
-        # 현재 노드가 범위에 속하면 결과에 추가
-        if min_val <= node.data <= max_val:
-            result.append(node.data)
-        
-        # 왼쪽 서브트리 탐색 (현재 노드가 min_val보다 크면)
-        if node.data > min_val:
-            self._range_search_helper(node.left, min_val, max_val, result)
-        
-        # 오른쪽 서브트리 탐색 (현재 노드가 max_val보다 작으면)
-        if node.data < max_val:
-            self._range_search_helper(node.right, min_val, max_val, result)
+        # TODO: 최적화된 범위 검색 구현
+        # 힌트: 
+        # - 현재 노드가 범위에 속하면 결과에 추가
+        # - 왼쪽 서브트리 탐색 (현재 노드가 min_val보다 크면)
+        # - 오른쪽 서브트리 탐색 (현재 노드가 max_val보다 작으면)
+        pass
     
     def count_in_range(self, min_val, max_val):
         """범위에 속하는 노드 개수 반환"""
         # TODO: 범위에 속하는 노드 개수만 세기
-        return len(self.range_search(min_val, max_val))
+        pass
     
     def sum_in_range(self, min_val, max_val):
         """범위에 속하는 값들의 합 반환"""
         # TODO: 범위에 속하는 값들의 합 계산
-        return sum(self.range_search(min_val, max_val))
+        pass
 
 # 범위 검색 테스트
 print("\n=== 문제 5 테스트 ===")
@@ -383,103 +348,61 @@ print(f"3~7 범위 합: {bst_range.sum_in_range(3, 7)}")  # 25
 
 print("\n" + "="*60)
 
-# 문제 6: BST 고급 기능 (🥇 골드 3-5 난이도)
+# 문제 6: BST 고급 기능 (5점)
 print("📝 문제 6: BST 고급 기능들")
-print("난이도: 🥇 골드 3-5")
+print("난이도: 5점")
 print("목표: BST의 고급 기능들을 구현해보기")
 
 class BSTMaster(BSTRangeSearch):
     def height(self):
         """BST 높이 계산"""
         # TODO: 트리의 높이 반환
+        if self.root is None:
+            return -1
         return self._height_helper(self.root)
     
     def _height_helper(self, node):
+        # TODO: 재귀로 높이 계산
         if node is None:
             return -1
-        return 1 + max(self._height_helper(node.left), 
-                      self._height_helper(node.right))
+        left = self._height_helper(node.left)
+        right = self._height_helper(node.right)
+        height = max(left, right)
+        return height + 1
     
     def is_balanced(self):
         """BST가 균형잡혀있는지 확인 (높이 차이 ≤ 1)"""
         # TODO: 모든 노드에서 왼쪽과 오른쪽 서브트리의 높이 차이가 1 이하인지 확인
-        def check_balance(node):
+        if self.root is None:
+            return True
+        def check_tree(node):
             if node is None:
-                return True, -1
+                return True
+            left = self._height_helper(node.left)
+            right = self._height_helper(node.right)
+            if abs(left - right) > 1:
+                return False
+            left_result = check_tree(node.left)
+            right_result = check_tree(node.right)
+            return left_result and right_result
+        return check_tree(self.root)
+
             
-            left_balanced, left_height = check_balance(node.left)
-            if not left_balanced:
-                return False, 0
-            
-            right_balanced, right_height = check_balance(node.right)
-            if not right_balanced:
-                return False, 0
-            
-            current_height = 1 + max(left_height, right_height)
-            is_current_balanced = abs(left_height - right_height) <= 1
-            
-            return is_current_balanced, current_height
-        
-        balanced, _ = check_balance(self.root)
-        return balanced
-    
     def get_level_order(self):
         """레벨 순서 순회 (BFS)"""
         # TODO: 큐를 사용해서 레벨별로 순회
         from collections import deque
-        
-        if self.root is None:
-            return []
-        
-        result = []
-        queue = deque([self.root])
-        
-        while queue:
-            node = queue.popleft()
-            result.append(node.data)
-            
-            if node.left:
-                queue.append(node.left)
-            if node.right:
-                queue.append(node.right)
-        
-        return result
+        pass
     
     def mirror(self):
         """BST를 좌우 반전 (주의: BST 특성 깨짐!)"""
         # TODO: 모든 노드의 왼쪽과 오른쪽 자식을 바꾸기
-        def mirror_helper(node):
-            if node is None:
-                return
-            
-            # 좌우 자식 바꾸기
-            node.left, node.right = node.right, node.left
-            
-            # 재귀적으로 자식들도 반전
-            mirror_helper(node.left)
-            mirror_helper(node.right)
-        
-        mirror_helper(self.root)
+        pass
     
     def lowest_common_ancestor(self, val1, val2):
         """두 값의 최소 공통 조상 찾기"""
         # TODO: BST 특성을 이용해서 효율적으로 LCA 찾기
-        def lca_helper(node, val1, val2):
-            if node is None:
-                return None
-            
-            # 두 값이 모두 현재 노드보다 작으면 왼쪽에서 찾기
-            if val1 < node.data and val2 < node.data:
-                return lca_helper(node.left, val1, val2)
-            
-            # 두 값이 모두 현재 노드보다 크면 오른쪽에서 찾기
-            if val1 > node.data and val2 > node.data:
-                return lca_helper(node.right, val1, val2)
-            
-            # 하나는 왼쪽, 하나는 오른쪽에 있으면 현재 노드가 LCA
-            return node.data
-        
-        return lca_helper(self.root, val1, val2)
+        pass
 
 # 고급 기능 테스트
 print("\n=== 문제 6 테스트 ===")
@@ -505,12 +428,12 @@ print("\n" + "="*60)
 print("🎯 BST 실습 완료 후 체크리스트:")
 
 checklist = [
-    "✅ 문제 1: BST 기본 연산 (삽입, 검색, 순회)",
-    "✅ 문제 2: 최솟값/최댓값/k번째 값 찾기",
-    "✅ 문제 3: 삭제 연산 (3가지 케이스)",
-    "✅ 문제 4: BST 검증 (올바른 BST인지 확인)",
-    "✅ 문제 5: 범위 검색 (특정 범위의 값들)",
-    "✅ 문제 6: 고급 기능 (높이, 균형, LCA 등)"
+    "□ 문제 1: BST 기본 연산 (삽입, 검색, 순회)",
+    "□ 문제 2: 최솟값/최댓값/k번째 값 찾기",
+    "□ 문제 3: 삭제 연산 (3가지 케이스)",
+    "□ 문제 4: BST 검증 (올바른 BST인지 확인)",
+    "□ 문제 5: 범위 검색 (특정 범위의 값들)",
+    "□ 문제 6: 고급 기능 (높이, 균형, LCA 등)"
 ]
 
 for item in checklist:
@@ -541,59 +464,8 @@ next_steps = [
 for step in next_steps:
     print(f"  {step}")
 
-print("\n✨ BST 실습 완전 마스터! 고생하셨습니다!")
-print("🏆 이제 여러분은 BST 전문가입니다!")
-
-# 보너스: 성능 비교 코드
-print("\n" + "="*60)
-print("🎁 보너스: BST vs 리스트 성능 비교")
-
-import time
-import random
-
-def performance_comparison():
-    """BST와 리스트의 성능 비교"""
-    print("\n성능 비교 테스트 (1000개 데이터)")
-    
-    # 테스트 데이터 생성
-    data = list(range(1000))
-    random.shuffle(data)
-    
-    # BST 구성
-    bst = BST()
-    start_time = time.time()
-    for item in data:
-        bst.insert(item)
-    bst_insert_time = time.time() - start_time
-    
-    # 리스트 구성
-    lst = []
-    start_time = time.time()
-    for item in data:
-        lst.append(item)
-    list_insert_time = time.time() - start_time
-    
-    # 검색 테스트
-    search_targets = random.sample(data, 100)
-    
-    # BST 검색
-    start_time = time.time()
-    for target in search_targets:
-        bst.search(target)
-    bst_search_time = time.time() - start_time
-    
-    # 리스트 검색
-    start_time = time.time()
-    for target in search_targets:
-        target in lst
-    list_search_time = time.time() - start_time
-    
-    print(f"삽입 시간 - BST: {bst_insert_time:.4f}초, 리스트: {list_insert_time:.4f}초")
-    print(f"검색 시간 - BST: {bst_search_time:.4f}초, 리스트: {list_search_time:.4f}초")
-    print(f"검색 속도 차이: BST가 리스트보다 {list_search_time/bst_search_time:.1f}배 빠름!")
-
-# 성능 비교 실행 (시간이 걸릴 수 있음)
-# performance_comparison()
+print("\n✨ BST 실습 준비 완료!")
+print("🏆 이제 직접 구현해서 BST 전문가가 되어보세요!")
 
 print("\n🎯 BST 실습 완료!")
 print("다음은 그래프 알고리즘이 기다리고 있습니다! 🚀")
