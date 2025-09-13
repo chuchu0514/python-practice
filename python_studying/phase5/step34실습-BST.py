@@ -320,18 +320,28 @@ class BSTRangeSearch(BSTWithDelete):
         # - 현재 노드가 범위에 속하면 결과에 추가
         # - 왼쪽 서브트리 탐색 (현재 노드가 min_val보다 크면)
         # - 오른쪽 서브트리 탐색 (현재 노드가 max_val보다 작으면)
-        pass
+        if node is None:
+            return
+        
+        if min_val <= node.data <= max_val:
+            result.append(node.data)
+        if min_val < node.data:
+            self._range_search_helper(node.left, min_val, max_val, result)
+        if max_val > node.data:
+            self._range_search_helper(node.right, min_val, max_val, result)
+
     
     def count_in_range(self, min_val, max_val):
         """범위에 속하는 노드 개수 반환"""
         # TODO: 범위에 속하는 노드 개수만 세기
-        pass
+        self.range_search(self.root, min_val, max_val)
+        return len(result) 
     
     def sum_in_range(self, min_val, max_val):
         """범위에 속하는 값들의 합 반환"""
         # TODO: 범위에 속하는 값들의 합 계산
-        pass
-
+        result = self.range_search(min_val, max_val)
+        return sum(result)
 # 범위 검색 테스트
 print("\n=== 문제 5 테스트 ===")
 bst_range = BSTRangeSearch()
@@ -391,18 +401,69 @@ class BSTMaster(BSTRangeSearch):
     def get_level_order(self):
         """레벨 순서 순회 (BFS)"""
         # TODO: 큐를 사용해서 레벨별로 순회
+        if self.root is None:
+            return []
         from collections import deque
-        pass
+        result_queue = deque([self.root])
+        result = []
+        while result_queue:
+            node = result_queue.popleft()
+            result.append(node.data)
+
+            if node.left:
+                result_queue.append(node.left)
+            if node.right:
+                result_queue.append(node.right)
+            
+
+        return result
+
+            
     
     def mirror(self):
         """BST를 좌우 반전 (주의: BST 특성 깨짐!)"""
         # TODO: 모든 노드의 왼쪽과 오른쪽 자식을 바꾸기
-        pass
+        if self.root is None:
+            return 
+        def swap(node):
+            if node is None:
+                return 
+            
+            node.left, node.right = node.right, node.left
+            swap(node.left)
+            swap(node.right)
+        
+        swap(self.root)
+
     
     def lowest_common_ancestor(self, val1, val2):
         """두 값의 최소 공통 조상 찾기"""
         # TODO: BST 특성을 이용해서 효율적으로 LCA 찾기
-        pass
+        if self.root is None:
+            return None
+        # 미리 체크할 수도 있음
+        if not self.search(val1) or not self.search(val2):
+            return None
+        if val1 == val2:
+            return val1 if self.search(val1) else None
+        
+        node = self.root
+
+        while node:
+            # val1, val2를 정렬해서 min, max 구하기
+            min_val, max_val = min(val1, val2), max(val1, val2)
+            
+            if min_val <= node.data <= max_val:
+                return node.data  # 🔥 LCA 찾음!
+            elif node.data > max_val:
+                node = node.left   # 둘 다 왼쪽에 있음
+            else:
+                node = node.right  # 둘 다 오른쪽에 있음
+        
+        return None  # 값이 트리에 없음
+                
+
+            
 
 # 고급 기능 테스트
 print("\n=== 문제 6 테스트 ===")
