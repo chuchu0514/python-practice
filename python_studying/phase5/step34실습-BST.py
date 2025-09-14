@@ -198,20 +198,44 @@ class BSTWithDelete(BSTAdvanced):
         self.root = self._delete_helper(self.root, data)
     
     def _delete_helper(self, node, data):
-        """삭제를 도와주는 재귀 함수"""
-        # TODO: 3가지 케이스를 모두 처리해야 함!
-        
-        # 1단계: 삭제할 노드 찾기
-        # 2단계: 3가지 케이스 처리
-        # 케이스 1: 잎 노드 (자식 0개)
-        # 케이스 2: 자식이 1개
-        # 케이스 3: 자식이 2개 (successor 찾아서 교체)
-        pass
-    
+        if node is None:
+            return None
+            
+        if data < node.data:
+            node.left = self._delete_helper(node.left, data)   #여기서 생각을.. 삭제할 노드에 도달했을 때 경우를 생각해보셈 
+            #그럼 node.left = None이 돼야겠지 케이스1의 경우 
+            return node
+        elif data > node.data:
+            node.right = self._delete_helper(node.right, data) 
+            return node
+        else:  # 삭제할 노드 발견
+            # 케이스 1: 잎 노드
+            if (node.left, node.right) == (None, None):
+                return None  # 부모에게 "None 연결해!"
+                
+            
+            # 케이스 2: 자식 1개
+            if node.left is None:
+                return node.right  # "오른쪽 자식 연결해!"
+            if node.right is None:
+                return node.left   # "왼쪽 자식 연결해!"
+                
+            # 케이스 3: 자식 2개
+            # successor 찾아서 값 교체 후 재귀 삭제
+            if node.left and node.right:
+                successor = self._find_min_node(node.right)
+                node.data = successor.data
+                node.right = self._delete_helper(node.right, successor.data)
+                return node
+            
     def _find_min_node(self, node):
-        """서브트리에서 최솟값 노드 찾기"""
-        # TODO: 가장 왼쪽 노드 반환
-        pass
+        if node is None:
+            return None
+        # current 변수 불필요
+        while node.left:
+            node = node.left
+        return node
+
 
 # 삭제 테스트
 print("\n=== 문제 3 테스트 ===")
@@ -334,7 +358,7 @@ class BSTRangeSearch(BSTWithDelete):
     def count_in_range(self, min_val, max_val):
         """범위에 속하는 노드 개수 반환"""
         # TODO: 범위에 속하는 노드 개수만 세기
-        self.range_search(self.root, min_val, max_val)
+        result = self.range_search(min_val, max_val)
         return len(result) 
     
     def sum_in_range(self, min_val, max_val):
