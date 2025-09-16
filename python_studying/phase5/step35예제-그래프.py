@@ -229,6 +229,7 @@ class GraphDFS:
         if not directed:
             self.adj_list[v].append(u)
     
+    ##재귀가 정배임
     def dfs_recursive(self, start_vertex, visited_order=None):
         """재귀를 사용한 DFS"""
         if visited_order is None:
