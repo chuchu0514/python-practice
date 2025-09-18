@@ -524,7 +524,7 @@ class MazeSolver:
         if dfs(self.start[0], self.start[1]):
             return path
         return None
-    
+    #####
     def solve_bfs(self):
         """BFS로 미로 해결 (최단 경로)"""
         queue = deque([(self.start[0], self.start[1], [self.start])])
