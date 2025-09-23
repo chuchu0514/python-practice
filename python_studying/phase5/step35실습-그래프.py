@@ -33,8 +33,16 @@ class Graph:
         # TODO: 간선 (u, v) 추가
         # 힌트: 방향 그래프인지 무방향 그래프인지 확인
         # 중복 간선 방지도 고려해보세요
-        pass
-    
+        if 0 <= u < self.num_vertices and 0 <= v < self.num_vertices:
+            if v not in self.adj_list[u]:  # 중복 방지
+                self.adj_list[u].append(v)
+            if not self.directed:
+                if u not in self.adj_list[v]:  # 중복 방지
+                    self.adj_list[v].append(u)
+        else:
+            print(f"❌ 유효하지 않은 정점: {u}, {v}")
+            print(f"유효 범위: 0 ~ {self.num_vertices-1}")
+        
     def remove_edge(self, u, v):
         """간선 제거"""
         # TODO: 간선 (u, v) 제거
