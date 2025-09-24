@@ -48,32 +48,54 @@ class Graph:
         # TODO: 간선 (u, v) 제거
         # 힌트: 리스트에서 remove() 메서드 사용
         # 존재하지 않는 간선 처리도 고려해보세요
-        pass
-    
+        if 0 <= u < self.num_vertices and 0 <= v < self.num_vertices:
+            if v in self.adj_list[u]:  # 중복 방지
+                self.adj_list[u].remove(v)
+            if not self.directed:
+                if u in self.adj_list[v]:  # 중복 방지
+                    self.adj_list[v].remove(u)
+        else:
+            print(f"❌ 유효하지 않은 정점: {u}, {v}")  # ← 수정!
+            print(f"유효 범위: 0 ~ {self.num_vertices-1}")
+
     def get_neighbors(self, vertex):
         """특정 정점의 인접 정점들 반환"""
         # TODO: 정점 vertex의 모든 인접 정점 반환
         # 힌트: 유효한 정점 번호인지 먼저 확인
-        pass
+        if 0 <= vertex < self.num_vertices:
+            return self.adj_list[vertex].copy()
+        return []
     
+
     def get_degree(self, vertex):
         """정점의 차수 반환"""
         # TODO: 정점 vertex의 차수(연결된 간선 수) 반환
         # 힌트: 인접 리스트의 길이
-        pass
+        if 0 <= vertex < self.num_vertices:
+            return len(self.adj_list[vertex])
+        return 0
     
     def is_connected_to(self, u, v):
         """두 정점이 연결되었는지 확인"""
         # TODO: 정점 u와 v가 직접 연결되었는지 확인
         # 힌트: v가 u의 인접 리스트에 있는지 확인
-        pass
+        if 0 <= u < self.num_vertices and 0 <= v < self.num_vertices:
+            return v in self.adj_list[u]  # 이것만으로 충분!
+        return False
     
     def count_edges(self):
         """총 간선 수 계산"""
         # TODO: 그래프의 총 간선 수 계산
         # 힌트: 무방향 그래프는 중복 계산 주의 (나누기 2)
-        pass
-    
+        total = 0
+        for vertex in range(self.num_vertices):
+            total += len(self.adj_list[vertex])  # 각 정점의 차수 합
+        
+        # 무방향 그래프면 중복 계산이므로 2로 나누기
+        if not self.directed:
+            return total // 2
+        return total
+
     def display(self):
         """그래프 구조 출력"""
         print("\n📊 그래프 구조:")
@@ -112,6 +134,7 @@ class GraphDFS(Graph):
         # 방문 순서를 리스트로 반환
         visited = [False] * self.num_vertices
         result = []
+        self._dfs_helper(start, visited, result)
         # 헬퍼 함수 호출
         return result
     
