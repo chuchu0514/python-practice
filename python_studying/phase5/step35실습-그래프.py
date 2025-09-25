@@ -145,8 +145,12 @@ class GraphDFS(Graph):
         # 1. 현재 정점 방문 처리
         # 2. 결과 리스트에 추가
         # 3. 모든 인접 정점에 대해 재귀 호출
-        pass
-    
+        visited[vertex] = True
+        result.append(vertex)
+        for i in self.adj_list[vertex]:
+            if not visited[i]:
+                self._dfs_helper(i, visited, result)
+
     def dfs_iterative(self, start):
         """스택을 이용한 반복적 DFS"""
         # TODO: 스택을 사용한 DFS 구현
@@ -154,13 +158,44 @@ class GraphDFS(Graph):
         # 1. 스택에 시작 정점 추가
         # 2. 스택이 빌 때까지 반복
         # 3. 스택에서 정점 pop → 방문 처리 → 인접 정점들 push
-        pass
+        visited = [False] * self.num_vertices
+        result = []
+        stack = []
+        stack.append(start)
+        while stack:
+            vertex = stack.pop()
+            if not visited[vertex]:
+                visited[vertex] = True
+                result.append(vertex)
+                for i in reversed(self.adj_list[vertex]):
+                    if not visited[i]:
+                        stack.append(i)
+        
+        return result
+
     
     def has_path(self, start, end):
         """두 정점 간 경로 존재 여부 확인"""
         # TODO: DFS를 사용해서 start에서 end로 가는 경로가 있는지 확인
         # 힌트: DFS 중간에 end를 만나면 True 반환
-        pass
+        # visited = self.dfs_recursive(start)
+        # if end in visited:
+        #     return True
+        # return False   일케 만들었더니 비효율적이래
+        if start == end:
+            return True
+        visited = [False] * self.num_vertices
+        def dfs_search(vertex):
+            if vertex == end:
+                return True
+            visited[vertex] = True
+            for i in self.adj_list[vertex]:
+                if not visited[i]:
+                    if dfs_search(i):
+                        return True
+            return False
+        
+        return dfs_search(start)
     
     def find_all_paths(self, start, end):
         """두 정점 간 모든 경로 찾기"""
@@ -171,6 +206,7 @@ class GraphDFS(Graph):
         visited = [False] * self.num_vertices
         current_path = []
         # 헬퍼 함수 호출
+        self._find_paths_helper(start, end, visited, current_path, all_paths )
         return all_paths
     
     def _find_paths_helper(self, current, end, visited, path, all_paths):
@@ -181,7 +217,19 @@ class GraphDFS(Graph):
         # 2. 목표 정점에 도달하면 경로 저장
         # 3. 인접 정점들에 대해 재귀 호출
         # 4. 백트래킹 (현재 정점을 경로에서 제거)
-        pass
+        
+        path.append(current)
+        visited[current] = True
+
+        if current == end:
+            all_paths.append(path.copy())
+        else:
+            for neighbor in self.adj_list[current]:
+                if not visited[neighbor]:
+                    self._find_paths_helper(neighbor, end, visited, path, all_paths)
+        path.pop()
+        visited[current] = False
+
     
     def count_connected_components(self):
         """연결 성분의 개수 계산"""
@@ -189,7 +237,24 @@ class GraphDFS(Graph):
         # 힌트:
         # 1. 모든 정점을 미방문으로 초기화
         # 2. 미방문 정점에서 DFS 시작할 때마다 카운트 증가
-        pass
+        visited = [False] * self.num_vertices
+        count = 0
+        
+        # 모든 정점 확인
+        for vertex in range(self.num_vertices):
+            if not visited[vertex]:  # 미방문 정점 발견!
+                # 새로운 연결 성분 발견! 카운트 증가
+                count += 1
+                # 이 연결 성분 전체를 방문 처리
+                self._dfs_for_component(vertex, visited)
+        
+        return count
+
+    def _dfs_for_component(self, vertex, visited):
+        visited[vertex] = True
+        for neighbor in self.adj_list[vertex]:
+            if not visited[neighbor]:
+                self._dfs_for_component(neighbor, visited)
 
 # 테스트
 print("\n=== 문제 2 테스트 ===")
@@ -235,7 +300,18 @@ class GraphBFS(Graph):
         # 3. 큐가 빌 때까지 반복:
         #    - 큐에서 정점 pop
         #    - 인접 정점들 중 미방문 정점들 큐에 추가
-        pass
+        queue = deque([start])
+        visited = [False] * self.num_vertices
+        visited[start] = True
+        result = []
+        while queue:
+            vertex = queue.popleft()
+            result.append(vertex)
+            for i in self.adj_list[vertex]:
+                if not visited[i]:
+                    visited[i] = True
+                    queue.append(i)
+        return result
     
     def shortest_path(self, start, end):
         """두 정점 간 최단 경로 찾기"""
