@@ -15,12 +15,12 @@ stack = []  # 빈 스택
 
 print(f"초기 스택: {stack}")
 
-# 스택에 데이터 추가 (push)k
+# 스택에 데이터 추가 (push)
 stack.append("첫 번째 책")
 print(f"첫 번째 책 추가: {stack}")
 
 stack.append("두 번째 책")
-print(f"두 번째 책 추가: {stack}")
+print(f"두 번째 책 추가: {stack}") 
 
 stack.append("세 번째 책")
 print(f"세 번째 책 추가: {stack}")
