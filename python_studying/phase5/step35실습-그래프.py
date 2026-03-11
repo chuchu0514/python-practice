@@ -320,13 +320,34 @@ class GraphBFS(Graph):
         # 1. 큐에 (정점, 경로) 쌍으로 저장
         # 2. 목표 정점에 도달하면 경로 반환
         # 3. 각 정점까지의 경로를 같이 저장하며 탐색
-        pass
-    
+        if start == end:
+            return [start]
+        
+        visited = [False] * self.num_vertices
+        queue = deque([(start, [start])])  
+        visited[start] = True
+        
+        while queue:
+            vertex, path = queue.popleft()
+
+            for neighbor in self.adj_list[vertex]:
+                if not visited[neighbor]:
+                    visited[neighbor] = True
+                    
+                    if neighbor == end:
+                        return path + [neighbor]
+                    
+                    queue.append((neighbor, path + [neighbor]))
+
+        return None
+        
+
     def shortest_distance(self, start, end):
         """두 정점 간 최단 거리 계산"""
         # TODO: BFS를 사용한 최단 거리 계산
         # 힌트: shortest_path의 길이 - 1 또는 직접 거리 계산
-        pass
+        path = self.shortest_path(start, end)
+        return len(path) - 1 if path else -1
     
     def bfs_levels(self, start):
         """레벨별 BFS (각 레벨의 정점들 그룹화)"""

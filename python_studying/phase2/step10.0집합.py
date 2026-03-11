@@ -276,7 +276,6 @@ set_time = time.time() - start_time
 
 print(f"리스트 검색 시간: {list_time:.6f}초")
 print(f"집합 검색 시간: {set_time:.6f}초")
-print(f"집합이 약 {list_time/set_time:.0f}배 빠름!")
 
 print("\n💡 집합의 장점: 검색이 매우 빠름!")
 
