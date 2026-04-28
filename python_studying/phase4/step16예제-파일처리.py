@@ -10,7 +10,7 @@ file.write("\n파이썬으로 파일을 만들었어요!")
 file.close()  # 꼭 닫아줘야 해요!
 
 print("✅ my_first_file.txt 파일이 만들어졌어요!")
-print("폴더를 확인해보세요!")
+print("폴더를 확인해보세요!")                                                                                                                
 
 # 2. 더 안전한 방법 (with 사용)
 print("\n=== 더 안전한 방법 ===")

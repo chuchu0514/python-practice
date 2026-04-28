@@ -4,13 +4,14 @@ def play_flipcoin_game():
     while True:
         result = game_utils.flip_coin()  # 결과 받기
         print(f"🪙 결과: {result}")      # 결과 출력 추가!
-        answer = input("다시 던지시겠습니까?:(y/n)")
-        if answer == 'y':
-            continue
-        elif answer == 'n':
-            break
-        else: 
-            print("y와 n 중 하나를 입력해주십시오.")
+        while True:
+            answer = input("다시 던지시겠습니까?:(y/n)")
+            if answer == 'y':
+                break
+            elif answer == 'n':
+                return
+            else: 
+                print("y와 n 중 하나를 입력해주십시오.")
 
 def validate_input(user_input, difficult = 3):
     """간단하게 통합"""
