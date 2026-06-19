@@ -25,7 +25,7 @@ class Graph:
         """그래프 초기화"""
         self.num_vertices = num_vertices
         self.directed = directed
-        self.adj_list = [[] for _ in range(num_vertices)]
+        self.adj_list = [[] for _ in range(num_vertices)] #2차원 리스트임
         print(f"📊 {num_vertices}개 정점의 {'방향' if directed else '무방향'} 그래프 생성")
     
     def add_edge(self, u, v):
@@ -34,30 +34,26 @@ class Graph:
         # 힌트: 방향 그래프인지 무방향 그래프인지 확인
         # 중복 간선 방지도 고려해보세요
         if 0 <= u < self.num_vertices and 0 <= v < self.num_vertices:
-            if v not in self.adj_list[u]:  # 중복 방지
+            if not v in self.adj_list[u]:
                 self.adj_list[u].append(v)
-            if not self.directed:
-                if u not in self.adj_list[v]:  # 중복 방지
-                    self.adj_list[v].append(u)
+            if not self.directed and not u in self.adj_list[v]:
+                self.adj_list[v].append(u)
         else:
-            print(f"❌ 유효하지 않은 정점: {u}, {v}")
-            print(f"유효 범위: 0 ~ {self.num_vertices-1}")
-        
+            print("잘못된 정점 번호임.")
+    
     def remove_edge(self, u, v):
         """간선 제거"""
         # TODO: 간선 (u, v) 제거
         # 힌트: 리스트에서 remove() 메서드 사용
         # 존재하지 않는 간선 처리도 고려해보세요
         if 0 <= u < self.num_vertices and 0 <= v < self.num_vertices:
-            if v in self.adj_list[u]:  # 중복 방지
+            if v in self.adj_list[u]:
                 self.adj_list[u].remove(v)
-            if not self.directed:
-                if u in self.adj_list[v]:  # 중복 방지
-                    self.adj_list[v].remove(u)
+            if not self.directed and u in self.adj_list[v]:
+                self.adj_list[v].remove(u)
         else:
-            print(f"❌ 유효하지 않은 정점: {u}, {v}")  # ← 수정!
-            print(f"유효 범위: 0 ~ {self.num_vertices-1}")
-
+                print("잘못된 정점 번호")
+    
     def get_neighbors(self, vertex):
         """특정 정점의 인접 정점들 반환"""
         # TODO: 정점 vertex의 모든 인접 정점 반환
@@ -65,8 +61,7 @@ class Graph:
         if 0 <= vertex < self.num_vertices:
             return self.adj_list[vertex].copy()
         return []
-    
-
+        
     def get_degree(self, vertex):
         """정점의 차수 반환"""
         # TODO: 정점 vertex의 차수(연결된 간선 수) 반환
@@ -74,27 +69,26 @@ class Graph:
         if 0 <= vertex < self.num_vertices:
             return len(self.adj_list[vertex])
         return 0
-    
+        
     def is_connected_to(self, u, v):
         """두 정점이 연결되었는지 확인"""
         # TODO: 정점 u와 v가 직접 연결되었는지 확인
         # 힌트: v가 u의 인접 리스트에 있는지 확인
         if 0 <= u < self.num_vertices and 0 <= v < self.num_vertices:
-            return v in self.adj_list[u]  # 이것만으로 충분!
+            return v in self.adj_list[u]
         return False
     
     def count_edges(self):
         """총 간선 수 계산"""
         # TODO: 그래프의 총 간선 수 계산
         # 힌트: 무방향 그래프는 중복 계산 주의 (나누기 2)
-        total = 0
-        for vertex in range(self.num_vertices):
-            total += len(self.adj_list[vertex])  # 각 정점의 차수 합
-        
-        # 무방향 그래프면 중복 계산이므로 2로 나누기
-        if not self.directed:
-            return total // 2
-        return total
+        sum = 0
+        for i in range(self.num_vertices):
+            sum += self.get_degree(i)
+        if self.directed:
+            return sum
+        else:
+            return sum // 2
 
     def display(self):
         """그래프 구조 출력"""
@@ -148,9 +142,10 @@ class GraphDFS(Graph):
         visited[vertex] = True
         result.append(vertex)
         for i in self.adj_list[vertex]:
-            if not visited[i]:
+            if (visited[i] == False):
                 self._dfs_helper(i, visited, result)
 
+    
     def dfs_iterative(self, start):
         """스택을 이용한 반복적 DFS"""
         # TODO: 스택을 사용한 DFS 구현
@@ -159,18 +154,21 @@ class GraphDFS(Graph):
         # 2. 스택이 빌 때까지 반복
         # 3. 스택에서 정점 pop → 방문 처리 → 인접 정점들 push
         visited = [False] * self.num_vertices
-        result = []
         stack = []
         stack.append(start)
+        result = []
+
         while stack:
+            
             vertex = stack.pop()
-            if not visited[vertex]:
-                visited[vertex] = True
-                result.append(vertex)
-                for i in reversed(self.adj_list[vertex]):
-                    if not visited[i]:
-                        stack.append(i)
-        
+            if visited[vertex] == True:
+                continue
+            visited[vertex] = True
+            result.append(vertex)
+
+            for i in self.adj_list[vertex]:
+                if (visited[i] == False):
+                    stack.append(i)
         return result
 
     
@@ -178,24 +176,25 @@ class GraphDFS(Graph):
         """두 정점 간 경로 존재 여부 확인"""
         # TODO: DFS를 사용해서 start에서 end로 가는 경로가 있는지 확인
         # 힌트: DFS 중간에 end를 만나면 True 반환
-        # visited = self.dfs_recursive(start)
-        # if end in visited:
-        #     return True
-        # return False   일케 만들었더니 비효율적이래
-        if start == end:
-            return True
         visited = [False] * self.num_vertices
-        def dfs_search(vertex):
+        stack = []
+        stack.append(start)
+        result = []
+
+        while stack:
+            
+            vertex = stack.pop()
+            if visited[vertex] == True:
+                continue
+            visited[vertex] = True
+            result.append(vertex)
             if vertex == end:
                 return True
-            visited[vertex] = True
+
             for i in self.adj_list[vertex]:
-                if not visited[i]:
-                    if dfs_search(i):
-                        return True
-            return False
-        
-        return dfs_search(start)
+                if (visited[i] == False):
+                    stack.append(i)
+        return False
     
     def find_all_paths(self, start, end):
         """두 정점 간 모든 경로 찾기"""
@@ -205,8 +204,8 @@ class GraphDFS(Graph):
         all_paths = []
         visited = [False] * self.num_vertices
         current_path = []
+        self._find_paths_helper(start, end, visited, current_path, all_paths)
         # 헬퍼 함수 호출
-        self._find_paths_helper(start, end, visited, current_path, all_paths )
         return all_paths
     
     def _find_paths_helper(self, current, end, visited, path, all_paths):
@@ -217,18 +216,18 @@ class GraphDFS(Graph):
         # 2. 목표 정점에 도달하면 경로 저장
         # 3. 인접 정점들에 대해 재귀 호출
         # 4. 백트래킹 (현재 정점을 경로에서 제거)
-        
-        path.append(current)
         visited[current] = True
+        path.append(current)
 
         if current == end:
             all_paths.append(path.copy())
         else:
-            for neighbor in self.adj_list[current]:
-                if not visited[neighbor]:
-                    self._find_paths_helper(neighbor, end, visited, path, all_paths)
+            for i in self.adj_list[current]:
+                if not visited[i]:
+                    self._find_paths_helper(i, end, visited, path, all_paths)
         path.pop()
         visited[current] = False
+        
 
     
     def count_connected_components(self):
@@ -239,22 +238,12 @@ class GraphDFS(Graph):
         # 2. 미방문 정점에서 DFS 시작할 때마다 카운트 증가
         visited = [False] * self.num_vertices
         count = 0
-        
-        # 모든 정점 확인
-        for vertex in range(self.num_vertices):
-            if not visited[vertex]:  # 미방문 정점 발견!
-                # 새로운 연결 성분 발견! 카운트 증가
+        result = []
+        for i ,j in enumerate (visited):
+            if visited[i] == False:
+                self._dfs_helper(i, visited, result)
                 count += 1
-                # 이 연결 성분 전체를 방문 처리
-                self._dfs_for_component(vertex, visited)
-        
         return count
-
-    def _dfs_for_component(self, vertex, visited):
-        visited[vertex] = True
-        for neighbor in self.adj_list[vertex]:
-            if not visited[neighbor]:
-                self._dfs_for_component(neighbor, visited)
 
 # 테스트
 print("\n=== 문제 2 테스트 ===")
@@ -300,10 +289,11 @@ class GraphBFS(Graph):
         # 3. 큐가 빌 때까지 반복:
         #    - 큐에서 정점 pop
         #    - 인접 정점들 중 미방문 정점들 큐에 추가
-        queue = deque([start])
-        visited = [False] * self.num_vertices
-        visited[start] = True
+        queue = deque()
         result = []
+        visited = [False] * self.num_vertices
+        queue.append(start)
+        visited[start] = True
         while queue:
             vertex = queue.popleft()
             result.append(vertex)
@@ -311,43 +301,38 @@ class GraphBFS(Graph):
                 if not visited[i]:
                     visited[i] = True
                     queue.append(i)
+        
         return result
-    
     def shortest_path(self, start, end):
         """두 정점 간 최단 경로 찾기"""
         # TODO: BFS를 사용한 최단 경로 찾기
         # 힌트:
         # 1. 큐에 (정점, 경로) 쌍으로 저장
         # 2. 목표 정점에 도달하면 경로 반환
-        # 3. 각 정점까지의 경로를 같이 저장하며 탐색
-        if start == end:
-            return [start]
-        
+        # 3. 각 정점까지의 경로를 같이 저장하며 
+        queue = deque()
         visited = [False] * self.num_vertices
-        queue = deque([(start, [start])])  
+        queue.append((start, [start]))
         visited[start] = True
-        
         while queue:
             vertex, path = queue.popleft()
-
-            for neighbor in self.adj_list[vertex]:
-                if not visited[neighbor]:
-                    visited[neighbor] = True
-                    
-                    if neighbor == end:
-                        return path + [neighbor]
-                    
-                    queue.append((neighbor, path + [neighbor]))
-
-        return None
+            if vertex == end:
+                return path
+            for i in self.adj_list[vertex]:
+                if not visited[i]:
+                    visited[i] = True
+                    queue.append((i, path + [i]))
         
+        return None
 
+    
     def shortest_distance(self, start, end):
         """두 정점 간 최단 거리 계산"""
         # TODO: BFS를 사용한 최단 거리 계산
         # 힌트: shortest_path의 길이 - 1 또는 직접 거리 계산
-        path = self.shortest_path(start, end)
-        return len(path) - 1 if path else -1
+        if self.shortest_path(start, end):
+            return len(self.shortest_path(start, end)) - 1       
+        return None 
     
     def bfs_levels(self, start):
         """레벨별 BFS (각 레벨의 정점들 그룹화)"""
@@ -356,7 +341,24 @@ class GraphBFS(Graph):
         # 1. 큐에 (정점, 레벨) 쌍으로 저장
         # 2. 레벨별로 딕셔너리에 정점들 저장
         # 반환: {0: [start], 1: [level1_nodes], 2: [level2_nodes], ...}
-        pass
+        queue = deque()
+        result = {}
+        level = 0
+        visited = [False] * self.num_vertices
+        queue.append((start, level))
+        visited[start] = True
+        while queue:
+            vertex, level = queue.popleft()
+        if level not in result:
+            result[level] = []
+        result[level].append(vertex)
+
+        for i in self.adj_list[vertex]:
+            if not visited[i]:
+                visited[i] = True
+                queue.append((i, level + 1))
+    
+        return result
     
     def is_bipartite(self):
         """이분 그래프 판별"""
@@ -365,14 +367,45 @@ class GraphBFS(Graph):
         # 1. 각 정점을 두 색깔 중 하나로 칠하기
         # 2. 인접한 정점끼리 다른 색이어야 함
         # 3. 색칠이 불가능하면 이분 그래프가 아님
-        pass
-    
+        color = [-1] * self.num_vertices
+        queue = deque()
+        for i in range(len(color)):
+            if color[i] == -1:
+                queue.append(i)
+                while queue:
+                    vertex = queue.popleft()
+                    if color[vertex] == -1:
+                        color[vertex] = 0
+
+                    for i in self.adj_list[vertex]:
+                        if color[i] == -1:
+                            color[i] = 1 - color[vertex]
+                            queue.append(i)
+                        elif (color[i] == color[vertex]):
+                            return False
+        return True
+                
+            
     def find_all_distances(self, start):
         """시작점에서 모든 정점까지의 최단거리"""
         # TODO: 시작점에서 모든 정점까지의 최단거리 계산
         # 힌트: BFS하면서 각 정점의 거리 저장
-        # 반환: [거리] 배열, 도달 불가능하면 -1
-        pass
+        # 반환: [거리] 배열, 도달 불가능하면 -
+        distances = [-1] * self.num_vertices
+        distances[start] = 0
+        queue = deque()
+        visited = [False] * self.num_vertices
+        queue.append(start)
+        visited[start] = True
+        while queue:
+            vertex = queue.popleft()
+            for i in self.adj_list[vertex]:
+                if not visited[i]:
+                    distances[i] = distances[vertex] + 1
+                    visited[i] = True
+                    queue.append(i)
+        return distances
+
 
 # 테스트
 print("\n=== 문제 3 테스트 ===")

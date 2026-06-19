@@ -26,3 +26,5 @@ if __name__ == "__main__":
     empty_list = []  # 🔴 중단점 11
     result2 = calculate_average(empty_list)  # 🔴 중단점 12
     print(f"결과: {result2}")
+
+    
