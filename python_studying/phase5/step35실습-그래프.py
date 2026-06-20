@@ -349,15 +349,15 @@ class GraphBFS(Graph):
         visited[start] = True
         while queue:
             vertex, level = queue.popleft()
-        if level not in result:
-            result[level] = []
-        result[level].append(vertex)
+            if level not in result:
+                result[level] = []
+            result[level].append(vertex)
 
-        for i in self.adj_list[vertex]:
-            if not visited[i]:
-                visited[i] = True
-                queue.append((i, level + 1))
-    
+            for i in self.adj_list[vertex]:
+                if not visited[i]:
+                    visited[i] = True
+                    queue.append((i, level + 1))
+        
         return result
     
     def is_bipartite(self):
@@ -377,11 +377,11 @@ class GraphBFS(Graph):
                     if color[vertex] == -1:
                         color[vertex] = 0
 
-                    for i in self.adj_list[vertex]:
-                        if color[i] == -1:
-                            color[i] = 1 - color[vertex]
-                            queue.append(i)
-                        elif (color[i] == color[vertex]):
+                    for j in self.adj_list[vertex]:
+                        if color[j] == -1:
+                            color[j] = 1 - color[vertex]
+                            queue.append(j)
+                        elif (color[j] == color[vertex]):
                             return False
         return True
                 
